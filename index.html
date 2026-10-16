@@ -210,9 +210,10 @@ details.sub[open]>summary{margin-bottom:6px}
 <nav class="tabs" aria-label="Sections"><button class="tabbtn" id="routechip" style="background:var(--gold-soft);border-color:var(--gold)">🔁 Route</button><button class="tabbtn" data-tab="trip" aria-selected="false">🗺️ Trip</button><button class="tabbtn" data-tab="days" aria-selected="false">📅 Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">🏨 Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">🍽️ Food</button><button class="tabbtn" data-tab="together" aria-selected="false">✨ Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">🚆 Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">✅ To book</button><button class="tabbtn" data-tab="info" aria-selected="false">ℹ️ Good to know</button></nav>
 <main>
 <section class="tab" id="tab-trip">
+  <div class="panel" style="gap:12px"><h3>🍽️ How do you like to eat? <span class="small muted" id="foodnow"></span></h3><p class="small muted">Pick this first. It changes the total and each day's food plan.</p><div class="seg" id="foodpick"></div></div>
   <div class="panel" id="summary"></div>
   <details class="ref" id="routepick"><summary>🔁 Change route <span class="small muted">(9 options)</span> <span class="plus">+</span></summary><div class="inner"><p class="small muted">Tap a route. Everything on every tab changes to match it. Prices are per person.</p><div class="groups" id="picker"></div></div></details>
-  <details class="ref" id="foodfold"><summary>🍽️ How do you like to eat? <span class="small muted" id="foodnow"></span> <span class="plus">+</span></summary><div class="inner"><p class="small muted">This changes the total and each day's food plan.</p><div class="seg" id="foodpick"></div></div></details>
+
 </section>
 <section class="tab" id="tab-days" hidden>
   <h2>Day by day</h2>
@@ -730,6 +731,25 @@ function render(){
   const r=ROUTES[current],c=costs(current),f=FLIGHT[current];
   const target=150000, over=c.pp-target, maxv=Math.max(c.pp,target)*1.08;
   document.getElementById("summary").innerHTML=`
+<h3>💰 Your trip budget</h3>
+   <div class="budgetbar">
+     <div style="display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline"><span class="bignum num">${inr(c.pp)}</span><span class="muted">per person, land cost · eating: <b>${FOODMODES[FOODMODE].n}</b></span></div>
+     <div class="small">${over>0?`About <b>${inr(over)} over</b> the ₹1.5L target. Still well under the ₹2.5L max.`:`<b>${inr(-over)} under</b> the ₹1.5L target.`}</div>
+     <div class="bar" aria-hidden="true"><i class="${over>0?'over':''}" style="width:${c.pp/maxv*100}%"></i><u style="left:${target/maxv*100}%"></u></div>
+     <div class="small muted">Black line = ₹1.5L. Mumbai flights are extra.</div>
+   </div>
+   <div class="money">${donut(c.parts,c.total)}
+     <div class="legend">${c.parts.map(([n,v,col])=>`<div class="lg"><span class="sw" style="background:var(${col})"></span><span>${n}</span><span class="v">${inr(v)}</span></div>`).join("")}
+       <div class="lg" style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><span></span><b>Land total for 2</b><span class="v">${inr(c.total)}</span></div>
+       <div class="lg"><span></span><b>Per person</b><span class="v">${inr(c.pp)}</span></div>
+       <div class="lg"><span></span><span class="muted">+ Mumbai flights (per person)</span><span class="v muted">${inr(73370)}</span></div>
+     </div>
+   </div>
+   ${FOODMODE!=="out"?`<div class="callout"><b>Eating "${FOODMODES[FOODMODE].n}" saves about ${inr(84000-FOODMODES[FOODMODE].v)} on this route.</b><p class="small">If you'd like to use it, a few ideas:</p><div class="extras">${EXTRAS.filter(e=>!e.only||r.path.includes(e.only)).map(e=>`<div class="extra"><span>${e.t}</span><b class="num">${e.p}</b></div>`).join("")}</div></div>`:""}
+
+   <div class="callout"><b>Paris → Italy flight</b><p>${f.t} · <span class="num">${inr(f.p)}</span> for 2. ${f.why} <a href="https://www.google.com/travel/flights" target="_blank" rel="noopener">Check on Google Flights</a></p></div>
+   ${over>0?`<div class="callout gold"><b>How to get down to ₹1.5L each</b><ul><li>Swap one or two hotels for the "other option" on the Hotels tab (saves ₹10–20k).</li><li>Make your anniversary a gondola or sunset plus a simpler dinner (saves ₹10–15k).</li><li>Lunch at vegetarian buffets and pizza-by-the-slice places (saves ₹5–10k).</li></ul></div>`:""}
+   <hr style="border:0;border-top:1px solid var(--line);margin:4px 0">
    <div class="top"><div style="display:flex;flex-direction:column;gap:8px;min-width:0">
      <span class="eyebrow">Route ${current}${r.tag[1]?" · "+r.tag[1]:""}</span>
      <h3 style="font-size:26px">${r.name}</h3>
@@ -741,25 +761,7 @@ function render(){
      <div class="facts"><a class="chip" href="#days" data-goto="days">📅 See the days</a><a class="chip" href="#hotels" data-goto="hotels">🏨 Hotels</a><a class="chip" href="#together" data-goto="together">✨ Things to do</a><a class="chip" href="#book" data-goto="book">✅ What to book</a></div>
    </div>
    <div class="mapbox">${routeMap(current)}<div class="mapkey"><span><i class="f"></i>flight</span><span><i></i>train</span><span>♥ anniversary</span></div></div></div>
-   <div class="budgetbar">
-     <div style="display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline"><span class="bignum num">${inr(c.pp)}</span><span class="muted">per person, land cost · eating: <b>${FOODMODES[FOODMODE].n}</b></span></div>
-     <div class="small">${over>0?`About <b>${inr(over)} over</b> the ₹1.5L target. Still well under the ₹2.5L max.`:`<b>${inr(-over)} under</b> the ₹1.5L target.`}</div>
-     <div class="bar" aria-hidden="true"><i class="${over>0?'over':''}" style="width:${c.pp/maxv*100}%"></i><u style="left:${target/maxv*100}%"></u></div>
-     <div class="small muted">Black line = ₹1.5L. Mumbai flights are extra.</div>
-   </div>
-   <details class="sub"><summary>💰 See where the money goes <span class="plus">+</span></summary>
-   <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
-   <div class="money">${donut(c.parts,c.total)}
-     <div class="legend">${c.parts.map(([n,v,col])=>`<div class="lg"><span class="sw" style="background:var(${col})"></span><span>${n}</span><span class="v">${inr(v)}</span></div>`).join("")}
-       <div class="lg" style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><span></span><b>Land total for 2</b><span class="v">${inr(c.total)}</span></div>
-       <div class="lg"><span></span><b>Per person</b><span class="v">${inr(c.pp)}</span></div>
-       <div class="lg"><span></span><span class="muted">+ Mumbai flights (per person)</span><span class="v muted">${inr(73370)}</span></div>
-     </div>
-   </div>
-   ${FOODMODE!=="out"?`<div class="callout"><b>Eating "${FOODMODES[FOODMODE].n}" saves about ${inr(84000-FOODMODES[FOODMODE].v)} on this route.</b><p class="small">If you'd like to use it, a few ideas:</p><div class="extras">${EXTRAS.filter(e=>!e.only||r.path.includes(e.only)).map(e=>`<div class="extra"><span>${e.t}</span><b class="num">${e.p}</b></div>`).join("")}</div></div>`:""}
-
-   <div class="callout"><b>Paris → Italy flight</b><p>${f.t} · <span class="num">${inr(f.p)}</span> for 2. ${f.why} <a href="https://www.google.com/travel/flights" target="_blank" rel="noopener">Check on Google Flights</a></p></div>
-   ${over>0?`<div class="callout gold"><b>How to get down to ₹1.5L each</b><ul><li>Swap one or two hotels for the "other option" on the Hotels tab (saves ₹10–20k).</li><li>Make your anniversary a gondola or sunset plus a simpler dinner (saves ₹10–15k).</li><li>Lunch at vegetarian buffets and pizza-by-the-slice places (saves ₹5–10k).</li></ul></div>`:""}</div></details>`;
+`;
 
   document.getElementById("dayshead").innerHTML=`<p class="small"><b>Route ${current}: ${r.name}</b></p>${nightsChips(r)}`;
   document.getElementById("days").innerHTML=DAYS[current].map((d,i)=>`<details class="day ${d.anniv?'anniv':''}"><summary><span class="dthumb" style="${bg(dayImg(d))}" aria-hidden="true"></span><span class="date"><span>${d.date[0]}</span><b>${d.date[1]}</b></span><span class="sumtxt"><span class="t">${d.title}</span><br><span class="c">${d.city}</span><br>${wxChip(d)}</span><span class="plus" aria-hidden="true">+</span></summary><div class="daybody">${d.title!=="Fly home"?`<p class="small">🏨 Tonight: <a href="#hotels" data-goto="hotels">${HOTEL[OVERNIGHT(d)].name}</a></p>`:""}<div class="dayimg" style="${bg(dayImg(d))}" role="img" aria-label="${CAP[dayImg(d)]}"><span style="position:absolute;left:8px;bottom:8px;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px">${CAP[dayImg(d)]}</span></div>${d.go?`<div class="blk"><span>Getting there</span><div>${linkify(d.go,OVERNIGHT(d))}</div></div>`:""}${d.see?`<div class="blk"><span>Plan</span><ul>${d.see.map(s=>`<li>${linkify(s,OVERNIGHT(d))}</li>`).join("")}</ul></div>`:""}${moveBlock(d)}${foodBlock(d)}</div></details>`).join("");
