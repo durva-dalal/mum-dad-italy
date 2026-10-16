@@ -165,7 +165,7 @@ details.ref>summary{grid-template-columns:1fr auto}
 .mapkey i{display:inline-block;width:22px;height:0;border-top:3px solid var(--teal);vertical-align:middle;margin-right:4px}
 .mapkey i.f{border-top:3px dashed var(--gold)}
 .btnlink{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--teal);color:var(--surface);text-decoration:none;font-weight:700;font-size:15px}
-.wx{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);text-decoration:none}
+.wx{display:inline-block;margin-top:2px;font-size:13px;color:var(--muted);text-decoration:none}
 .wx:hover{color:var(--teal)}
 nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 0;background:var(--bg);border-bottom:1px solid var(--line);margin-bottom:4px}
 nav.tabs::-webkit-scrollbar{display:none}
@@ -176,7 +176,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .tab{display:flex;flex-direction:column;gap:16px}
 .tab[hidden]{display:none!important}
 .facts .chip{font-size:13px;padding:4px 10px}
-.nights{display:flex;flex-wrap:wrap;gap:6px}
+.nights{margin:0}
 .nchip{font-size:13px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--teal-soft);color:var(--ink)}
 .nchip.a{background:var(--gold-soft)}
 @media (max-width:520px){header .lead{font-size:15px}header h1{font-size:30px}}
@@ -198,21 +198,16 @@ details.sub[open]>summary{margin-bottom:6px}
   <span class="eyebrow">For Mum &amp; Dad · 5–15 December 2026</span>
   <h1>Italy Anniversary Trip</h1>
   <p class="lead">Your ten nights in Italy, entering through Paris. The 7th of December is your anniversary, so that day has no travel at all, just a beautiful city and a special evening for the two of you. <span style="color:var(--gold)">♥</span></p>
-  <div class="facts">
-    <span class="chip">✈ Mumbai → Paris · Fri 4 Dec, 21:25</span>
-    <span class="chip">✈ Milan → Mumbai · Tue 15 Dec, 11:40</span>
-    <span class="chip gold">♥ Anniversary · Mon 7 Dec</span>
-    <span class="chip">🌱 100% vegetarian</span>
-    <span class="chip">Target: ₹1.5L land per person</span>
-  </div>
+  <p class="small muted">✈ Mumbai → Paris, Fri 4 Dec 21:25 &nbsp;·&nbsp; ✈ Milan → Mumbai, Tue 15 Dec 11:40 &nbsp;·&nbsp; <span style="color:var(--gold);font-weight:700">♥ Anniversary Mon 7 Dec</span> &nbsp;·&nbsp; 100% vegetarian &nbsp;·&nbsp; target ₹1.5L land per person</p>
 </header>
 
 <nav class="tabs" aria-label="Sections"><button class="tabbtn" id="routechip" style="background:var(--gold-soft);border-color:var(--gold)">🔁 Route</button><button class="tabbtn" data-tab="trip" aria-selected="false">🗺️ Trip</button><button class="tabbtn" data-tab="days" aria-selected="false">📅 Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">🏨 Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">🍽️ Food</button><button class="tabbtn" data-tab="together" aria-selected="false">✨ Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">🚆 Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">✅ To book</button><button class="tabbtn" data-tab="info" aria-selected="false">ℹ️ Good to know</button></nav>
 <main>
 <section class="tab" id="tab-trip">
+  <div id="routehead" style="display:flex;flex-direction:column;gap:6px"></div>
   <div class="panel" style="gap:12px"><h3>🍽️ How do you like to eat? <span class="small muted" id="foodnow"></span></h3><p class="small muted">Pick this first. It changes the total and each day's food plan.</p><div class="seg" id="foodpick"></div></div>
   <div class="panel" id="summary"></div>
-  <details class="ref" id="routepick"><summary>🔁 Change route <span class="small muted">(9 options)</span> <span class="plus">+</span></summary><div class="inner"><p class="small muted">Tap a route. Everything on every tab changes to match it. Prices are per person.</p><div class="groups" id="picker"></div></div></details>
+  <details class="ref" id="routepick"><summary><span>🔁 Change route <span class="small muted">· 9 options</span></span><span class="plus">+</span></summary><div class="inner"><p class="small muted">Tap a route. Everything on every tab changes to match it. Prices are per person.</p><div class="groups" id="picker"></div></div></details>
 
 </section>
 <section class="tab" id="tab-days" hidden>
@@ -707,14 +702,14 @@ function moveBlock(d){
   const h=HOTEL[k];
   return `<details class="sub"><summary>🚆 How to get around today <span class="plus">+</span></summary><div class="callout" style="padding:12px 14px"><b>From ${h.name}:</b><ul>${hits.map(([,place,how])=>`<li><b>${place}:</b> ${how}</li>`).join("")}</ul><p class="small muted">🚕 <b>Only if you really need one:</b> ${TAXI[k]} · Plan any route live in <a href="https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(h.q)}&travelmode=transit" target="_blank" rel="noopener">Google Maps (transit)</a>.</p></div></details>`;
 }
-function nightsChips(r){return `<div class="nights">${r.nights.map(([k,n])=>`<span class="nchip ${HOTEL[k].city.startsWith(r.anniv)?"a":""}">🌙 ${n} night${n>1?"s":""} ${HOTEL[k].city.replace(" CDG","").replace(" Orly","")}</span>`).join("")}</div>`;}
+function nightsChips(r){return `<p class="small muted nights">${r.nights.map(([k,n])=>`${n} night${n>1?"s":""} ${HOTEL[k].city.replace(" CDG","").replace(" Orly","")}`).join(" · ")}</p>`;}
 /* ---------- render ---------- */
 let current="B2";
 try{const s=localStorage.getItem("italy-route"); if(s&&ROUTES[s]) current=s;}catch(e){}
 
 function picker(){
   const g={A:["Fly into Italy the same day (5 Dec)","You land in Paris at 06:45 and fly on to Italy that afternoon."],B:["Sleep one night in Paris first","Rest at an airport hotel, fly to Italy on Sun 6 Dec."],C:["Everything on your list, nothing dropped","Amalfi, Rome, Florence, Pisa and Venice, all in. Busy, but complete."]};
-  document.getElementById("picker").innerHTML=Object.keys(g).map(k=>`<div class="group"><h3>Option ${k} · ${g[k][0]}</h3><p class="small muted">${g[k][1]}</p><div class="routes">${Object.keys(ROUTES).filter(id=>ROUTES[id].grp===k).map(id=>{const r=ROUTES[id],c=costs(id);return `<button class="route" data-id="${id}" aria-pressed="${id===current}"><span class="thumb" style="${bg(CITYIMG[r.anniv])}" aria-hidden="true"></span><span class="code">ROUTE ${id}${r.tag[1]?` · <span class="tag ${r.tag[0]||'cheap'}">${r.tag[1]}</span>`:""}</span><span class="name">${r.name}</span>${nightsChips(r)}<span class="pp num">${lakh(c.pp)} <span class="small muted">/ person</span></span><span class="small muted">♥ 7 Dec in ${r.anniv}</span></button>`}).join("")}</div></div>`).join("");
+  document.getElementById("picker").innerHTML=Object.keys(g).map(k=>`<div class="group"><h3>Option ${k} · ${g[k][0]}</h3><p class="small muted">${g[k][1]}</p><div class="routes">${Object.keys(ROUTES).filter(id=>ROUTES[id].grp===k).map(id=>{const r=ROUTES[id],c=costs(id);return `<button class="route" data-id="${id}" aria-pressed="${id===current}"><span class="thumb" style="${bg(CITYIMG[r.anniv])}" aria-hidden="true"></span><span class="code">ROUTE ${id}${r.tag[1]?` · <span style="color:${r.tag[0]==="best"?"var(--gold)":r.tag[0]==="busy"?"var(--warn)":"var(--teal)"}">${r.tag[1].toUpperCase()}</span>`:""}</span><span class="name">${r.name}</span>${nightsChips(r)}<span class="pp num">${lakh(c.pp)} <span class="small muted">/ person</span></span><span class="small muted">♥ 7 Dec in ${r.anniv}</span></button>`}).join("")}</div></div>`).join("");
   document.querySelectorAll(".route").forEach(b=>b.addEventListener("click",()=>{current=b.dataset.id;try{localStorage.setItem("italy-route",current)}catch(e){};const rp=document.getElementById("routepick");if(rp)rp.open=false;render();showTab("trip");}));
 }
 
@@ -730,6 +725,14 @@ function render(){
   picker();
   const r=ROUTES[current],c=costs(current),f=FLIGHT[current];
   const target=150000, over=c.pp-target, maxv=Math.max(c.pp,target)*1.08;
+  document.getElementById("routehead").innerHTML=`
+     <span class="eyebrow">Your route · Route ${current}${r.tag[1]?" · "+r.tag[1]:""}</span>
+     <h2 style="font-size:clamp(26px,5vw,34px)">${r.name}</h2>
+     <p class="lead">${r.blurb}</p>
+     <p style="font-weight:700">${["Paris"].concat(r.path.filter(p=>p!=="Paris")).map(p=>p===r.anniv?`<span style="color:var(--gold)">♥ ${p}</span>`:p+(p==="Paris"&&r.grp==="A"?" (airport only)":"")).join(' <span class="muted">→</span> ')}</p>
+     ${nightsChips(r)}
+     <p class="small"><a href="#" id="chg">Change route</a></p>`;
+  {const c=document.getElementById("chg"); if(c&&c.addEventListener) c.addEventListener("click",e=>{e.preventDefault();const rp=document.getElementById("routepick");if(rp){rp.open=true;rp.scrollIntoView({block:"start"});}});}
   document.getElementById("summary").innerHTML=`
 <h3>💰 Your trip budget</h3>
    <div class="budgetbar">
@@ -751,20 +754,14 @@ function render(){
    ${over>0?`<div class="callout gold"><b>How to get down to ₹1.5L each</b><ul><li>Swap one or two hotels for the "other option" on the Hotels tab (saves ₹10–20k).</li><li>Make your anniversary a gondola or sunset plus a simpler dinner (saves ₹10–15k).</li><li>Lunch at vegetarian buffets and pizza-by-the-slice places (saves ₹5–10k).</li></ul></div>`:""}
    <hr style="border:0;border-top:1px solid var(--line);margin:4px 0">
    <div class="top"><div style="display:flex;flex-direction:column;gap:8px;min-width:0">
-     <span class="eyebrow">Route ${current}${r.tag[1]?" · "+r.tag[1]:""}</span>
-     <h3 style="font-size:26px">${r.name}</h3>
-     <p class="lead">${r.blurb}</p>
-     <div class="trail">${["Paris"].concat(r.path.filter(p=>p!=="Paris")).map((p,i,a)=>`<span class="stop ${p===r.anniv?'anniv':''}">${p===r.anniv?'♥ ':''}${p}${p==="Paris"&&r.grp==="A"?" (airport only)":""}</span>${i<a.length-1?'<span class="arrow">→</span>':''}`).join("")}</div>
      <div class="strip">${r.path.filter((p,i,a)=>a.indexOf(p)===i&&p!=="Paris").map(p=>`<div class="ph ${p===r.anniv?'anniv':''}" style="${bg(CITYIMG[p])}" role="img" aria-label="${p}"><span>${p===r.anniv?'♥ ':''}${p}</span></div>`).join("")}</div>
-     ${nightsChips(r)}
      <p><a class="btnlink" href="${routeLink(current)}" target="_blank" rel="noopener">📍 Open this route in Google Maps</a></p>
-     <div class="facts"><a class="chip" href="#days" data-goto="days">📅 See the days</a><a class="chip" href="#hotels" data-goto="hotels">🏨 Hotels</a><a class="chip" href="#together" data-goto="together">✨ Things to do</a><a class="chip" href="#book" data-goto="book">✅ What to book</a></div>
    </div>
    <div class="mapbox">${routeMap(current)}<div class="mapkey"><span><i class="f"></i>flight</span><span><i></i>train</span><span>♥ anniversary</span></div></div></div>
 `;
 
   document.getElementById("dayshead").innerHTML=`<p class="small"><b>Route ${current}: ${r.name}</b></p>${nightsChips(r)}`;
-  document.getElementById("days").innerHTML=DAYS[current].map((d,i)=>`<details class="day ${d.anniv?'anniv':''}"><summary><span class="dthumb" style="${bg(dayImg(d))}" aria-hidden="true"></span><span class="date"><span>${d.date[0]}</span><b>${d.date[1]}</b></span><span class="sumtxt"><span class="t">${d.title}</span><br><span class="c">${d.city}</span><br>${wxChip(d)}</span><span class="plus" aria-hidden="true">+</span></summary><div class="daybody">${d.title!=="Fly home"?`<p class="small">🏨 Tonight: <a href="#hotels" data-goto="hotels">${HOTEL[OVERNIGHT(d)].name}</a></p>`:""}<div class="dayimg" style="${bg(dayImg(d))}" role="img" aria-label="${CAP[dayImg(d)]}"><span style="position:absolute;left:8px;bottom:8px;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px">${CAP[dayImg(d)]}</span></div>${d.go?`<div class="blk"><span>Getting there</span><div>${linkify(d.go,OVERNIGHT(d))}</div></div>`:""}${d.see?`<div class="blk"><span>Plan</span><ul>${d.see.map(s=>`<li>${linkify(s,OVERNIGHT(d))}</li>`).join("")}</ul></div>`:""}${moveBlock(d)}${foodBlock(d)}</div></details>`).join("");
+  document.getElementById("days").innerHTML=DAYS[current].map((d,i)=>`<details class="day ${d.anniv?'anniv':''}"><summary><span class="dthumb" style="${bg(dayImg(d))}" aria-hidden="true"></span><span class="date"><span>${d.date[0]}</span><b>${d.date[1]}</b></span><span class="sumtxt"><span class="t">${d.title}</span><br><span class="c">${d.city}</span><br>${wxChip(d)}</span><span class="plus" aria-hidden="true">+</span></summary><div class="daybody">${d.title!=="Fly home"?`<p class="small muted">Tonight: ${HOTEL[OVERNIGHT(d)].name}</p>`:""}<div class="dayimg" style="${bg(dayImg(d))}" role="img" aria-label="${CAP[dayImg(d)]}"><span style="position:absolute;left:8px;bottom:8px;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px">${CAP[dayImg(d)]}</span></div>${d.go?`<div class="blk"><span>Getting there</span><div>${linkify(d.go,OVERNIGHT(d))}</div></div>`:""}${d.see?`<div class="blk"><span>Plan</span><ul>${d.see.map(s=>`<li>${linkify(s,OVERNIGHT(d))}</li>`).join("")}</ul></div>`:""}${moveBlock(d)}${foodBlock(d)}</div></details>`).join("");
 
   document.getElementById("hotels").innerHTML=`<thead><tr><th>City</th><th>Hotel</th><th>Walk to transport</th><th>Lift &amp; heating</th><th>Breakfast</th><th class="r">Per night</th><th class="r">Nights</th><th>Other option</th></tr></thead><tbody>${r.nights.map(([k,n])=>{const h=HOTEL[k];return `<tr><td>${h.city}</td><td><a class="pick" href="${gh(h.name+" "+h.city)}" target="_blank" rel="noopener">${h.name}</a> <span class="small muted">· ${h.rating}★ guests</span><br><a class="small" href="${gm(h.q)}" target="_blank" rel="noopener">📍 Map</a></td><td class="small">${h.walk}</td><td class="small">✓ Lift<br>✓ Heating</td><td class="small">${h.bk?`Extra, about ${inr(h.bk)} a night for both (counted in the total)`:"Included"}</td><td class="r">${inr(h.n)}</td><td class="r">${n}</td><td class="small"><a href="${gm(h.altq)}" target="_blank" rel="noopener">${h.alt}</a></td></tr>`}).join("")}</tbody>`;
 
@@ -790,7 +787,7 @@ const TABKEYS=["trip","days","hotels","food","together","transport","book","info
 function showTab(k,scroll){ if(!TABKEYS.includes(k)) k="trip";
   TABKEYS.forEach(t=>{const el=document.getElementById("tab-"+t); if(el) el.hidden=(t!==k);});
   document.querySelectorAll(".tabbtn").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===k?"true":"false"));
-  const act=document.querySelector(`.tabbtn[data-tab="${k}"]`); if(act&&act.scrollIntoView) act.scrollIntoView({block:"nearest",inline:"center"});
+  const act=document.querySelector(`.tabbtn[data-tab="${k}"]`); if(act&&act.scrollIntoView&&scroll!==false) act.scrollIntoView({block:"nearest",inline:"center"});
   try{localStorage.setItem("italy-tab",k)}catch(e){}
   if(scroll!==false) window.scrollTo({top:0});
 }
