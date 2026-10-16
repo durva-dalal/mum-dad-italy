@@ -46,7 +46,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{o
 .num{font-variant-numeric:tabular-nums}
 header{display:flex;flex-direction:column;gap:12px}
 .facts{display:flex;flex-wrap:wrap;gap:8px}
-.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:15px}
+.chip{text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:15px}
 .chip.gold{background:var(--gold-soft);border-color:transparent;color:var(--ink)}
 .step{display:flex;align-items:baseline;gap:12px}
 .step b{font-family:var(--display);font-weight:400;font-size:15px;color:var(--surface);background:var(--teal);border-radius:999px;min-width:32px;height:32px;display:inline-grid;place-items:center;flex:none}
@@ -167,6 +167,26 @@ details.ref>summary{grid-template-columns:1fr auto}
 .btnlink{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--teal);color:var(--surface);text-decoration:none;font-weight:700;font-size:15px}
 .wx{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);text-decoration:none}
 .wx:hover{color:var(--teal)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 0;background:var(--bg);border-bottom:1px solid var(--line);margin-bottom:4px}
+nav.tabs::-webkit-scrollbar{display:none}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.tabbtn{all:unset;cursor:pointer;flex:none;padding:9px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:700;font-size:15px;white-space:nowrap}
+.tabbtn[aria-selected="true"]{background:var(--teal);border-color:var(--teal);color:var(--surface)}
+.tabbtn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tab{display:flex;flex-direction:column;gap:16px}
+.tab[hidden]{display:none!important}
+.facts .chip{font-size:13px;padding:4px 10px}
+.nights{display:flex;flex-wrap:wrap;gap:6px}
+.nchip{font-size:13px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--teal-soft);color:var(--ink)}
+.nchip.a{background:var(--gold-soft)}
+@media (max-width:520px){header .lead{font-size:15px}header h1{font-size:30px}}
+.tab>h2{margin-top:6px}
+.wrap{gap:20px}
+details.sub{border-top:1px solid var(--line);padding-top:8px}
+details.sub>summary{display:flex;justify-content:space-between;padding:6px 0;font-weight:700;font-size:15px}
+details.sub[open]>summary{margin-bottom:6px}
+.bignum{font-family:var(--display);font-size:30px;line-height:1}
+.tabnext{display:flex;justify-content:flex-end}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -178,7 +198,6 @@ details.ref>summary{grid-template-columns:1fr auto}
   <span class="eyebrow">For Mum &amp; Dad · 5–15 December 2026</span>
   <h1>Italy Anniversary Trip</h1>
   <p class="lead">Your ten nights in Italy, entering through Paris. The 7th of December is your anniversary, so that day has no travel at all, just a beautiful city and a special evening for the two of you. <span style="color:var(--gold)">♥</span></p>
-  <div class="hero" id="hero"></div>
   <div class="facts">
     <span class="chip">✈ Mumbai → Paris · Fri 4 Dec, 21:25</span>
     <span class="chip">✈ Milan → Mumbai · Tue 15 Dec, 11:40</span>
@@ -188,61 +207,48 @@ details.ref>summary{grid-template-columns:1fr auto}
   </div>
 </header>
 
-<section class="section" aria-labelledby="s0">
-  <div class="step"><b>0</b><h2 id="s0">How do you like to eat?</h2></div>
-  <p class="lead muted">Pick one. Every route's price, and every day's food plan, changes to match. You can switch any time.</p>
-  <div class="seg" id="foodpick"></div>
-</section>
-
-<section class="section" aria-labelledby="s1">
-  <div class="step"><b>1</b><h2 id="s1">Pick a route</h2></div>
-  <p class="lead muted">Tap any card. Everything below changes to match it: the money, the day-by-day plan, the hotels and what to book. Prices are for both of you together, and the big number is per person.</p>
-  <div class="groups" id="picker"></div>
-</section>
-
-<section class="section" aria-labelledby="s2">
-  <div class="step"><b>2</b><h2 id="s2">What this route looks like</h2></div>
+<nav class="tabs" aria-label="Sections"><button class="tabbtn" id="routechip" style="background:var(--gold-soft);border-color:var(--gold)">🔁 Route</button><button class="tabbtn" data-tab="trip" aria-selected="false">🗺️ Trip</button><button class="tabbtn" data-tab="days" aria-selected="false">📅 Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">🏨 Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">🍽️ Food</button><button class="tabbtn" data-tab="together" aria-selected="false">✨ Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">🚆 Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">✅ To book</button><button class="tabbtn" data-tab="info" aria-selected="false">ℹ️ Good to know</button></nav>
+<main>
+<section class="tab" id="tab-trip">
   <div class="panel" id="summary"></div>
+  <details class="ref" id="routepick"><summary>🔁 Change route <span class="small muted">(9 options)</span> <span class="plus">+</span></summary><div class="inner"><p class="small muted">Tap a route. Everything on every tab changes to match it. Prices are per person.</p><div class="groups" id="picker"></div></div></details>
+  <details class="ref" id="foodfold"><summary>🍽️ How do you like to eat? <span class="small muted" id="foodnow"></span> <span class="plus">+</span></summary><div class="inner"><p class="small muted">This changes the total and each day's food plan.</p><div class="seg" id="foodpick"></div></div></details>
 </section>
-
-<section class="section" aria-labelledby="s3">
-  <div class="step"><b>3</b><h2 id="s3">Day by day</h2></div>
+<section class="tab" id="tab-days" hidden>
+  <h2>Day by day</h2>
+  <div id="dayshead"></div>
   <p class="muted">Tap a day to open it. The gold one is your anniversary ♥</p>
   <div class="days" id="days"></div>
 </section>
-
-<section class="section" aria-labelledby="sx">
-  <div class="step"><b>✦</b><h2 id="sx">Things to do together</h2></div>
-  <p class="lead muted">Hands-on experiences for the two of you, so it's not only sightseeing. Make something together! 🎭🍋 None of these involve eating egg. Pizza dough has no egg, and I've left out fresh-pasta classes because that pasta is made with egg. Just ideas: pick any that sound fun. They're shown for the cities on your chosen route.</p>
-  <div class="cards" id="exp"></div>
-</section>
-
-<section class="section" aria-labelledby="s4">
-  <div class="step"><b>4</b><h2 id="s4">Hotels for this route</h2></div>
+<section class="tab" id="tab-hotels" hidden>
+  <h2>Your hotels</h2>
+  
   <div class="tbl"><table id="hotels"></table></div>
   <h3>Grocery shops near your hotels</h3>
   <p class="small muted">For fruit, bread, yoghurt, cheese, snacks and water. Most rooms in Italy have no kettle, so pack a small travel kettle if you want tea or instant food in the room.</p>
   <div class="cards" id="grocery"></div>
-  <p class="small muted">Prices are what Google Hotels showed on 16 Oct 2026 for these dates, per room per night for 2, before city tax. They change daily, so re-check before booking. Every hotel here has a lift and heating, and is 2–6 minutes on foot from a main station or bus stop, so getting around is easy. The other-option hotels weren't all checked for a lift, so check before booking one.</p>
+  <p class="small muted">Prices are what Google Hotels showed on 16 Oct 2026 for the exact nights of Route B2 (Paris 5 Dec, Venice 6–9, Florence 9–12, Rome 12–14, Milan 14–15, Sorrento 6–8), per room per night for 2, before city tax. Other routes use the same hotels on slightly different nights, so expect small differences. They change daily, so re-check before booking. Every hotel here has a lift and heating, and is 2–6 minutes on foot from a main station or bus stop, so getting around is easy. The other-option hotels weren't all checked for a lift, so check before booking one.</p>
+
 </section>
-
-<section class="section" aria-labelledby="s5">
-  <div class="step"><b>5</b><h2 id="s5">Book these, in this order</h2></div>
-  <p class="muted">Tick them off as you go. Ticks are saved on this device only.</p>
-  <div class="check" id="todo"></div>
+<section class="tab" id="tab-food" hidden>
+  <h2>Vegetarian food</h2>
+  <div class="callout"><b>Eggs and cheese</b><p>Lots of fresh pasta has egg in it, and Parmigiano is made with animal rennet. If you don't want eggs, say <i>"senza uova"</i> (without eggs). Useful line: <i>"Siamo vegetariani: niente carne, niente pesce, niente uova."</i> (We're vegetarian: no meat, no fish, no eggs.)</p></div>
+  
+    <p class="muted small">Fully vegetarian or vegan places first, then good vegetarian-friendly ones. Tap a name to open it in Google Maps. Book dinner a day ahead where it says so.</p>
+    <div class="cards" id="food"></div>
+    <p class="small muted">Every normal pizzeria works too: Margherita, Marinara and verdure pizzas are vegetarian. Look for "pasta al pomodoro", "cacio e pepe", "ribollita" (Florence soup), "risotto ai funghi". More places: <a href="https://www.happycow.net" target="_blank" rel="noopener">happycow.net</a>.</p>
+  
 </section>
+<section class="tab" id="tab-together" hidden>
+  <h2>Things to do together</h2>
+  
+  <p class="muted">Hands-on experiences for the two of you, so it's not only sightseeing. Make something together! 🎭🍋 None of these involve eating egg. Pizza dough has no egg, and I've left out fresh-pasta classes because that pasta is made with egg. Just ideas: pick any that sound fun. They're shown for the cities on your chosen route.</p>
+  <div class="cards" id="exp"></div>
 
-<section class="section" aria-labelledby="s6">
-  <div class="step"><b>6</b><h2 id="s6">Good to know (same for every route)</h2></div>
-
-  <details class="ref" open><summary>Things to sort out first <span class="plus">+</span></summary><div class="inner">
-    <div class="callout warn"><b>Visa: France visa, but most nights in Italy</b><p>Schengen rules say the visa should come from the country of the main stay. Your visa is French and almost every night is in Italy. You can still enter at Paris, but the border officer may ask why. Carry printed hotel bookings and the return ticket, and if you want certainty, ask VFS or the French consulate before booking anything non-refundable. I'm not a lawyer, so treat this as a flag to check, not advice.</p></div>
-    <div class="callout"><b>Luggage</b><p>The Gulf Air fare is "Economy Light". Check on <a href="https://www.gulfair.com" target="_blank" rel="noopener">gulfair.com</a> how many checked kilos it includes. The Paris → Italy flights in every route are hand-luggage-only fares, so I've added about ₹9,000 for two checked bags in every cost.</p></div>
-    <div class="callout"><b>Lounges</b><p>Durva is checking lounge access for you at Paris CDG (helpful on the same-day routes, where you wait a few hours), Paris Orly and Milan Malpensa.</p></div>
-    <div class="callout"><b>Eggs and cheese</b><p>Lots of fresh pasta has egg in it, and Parmigiano is made with animal rennet. If you don't want eggs, say <i>"senza uova"</i> (without eggs). Useful line: <i>"Siamo vegetariani: niente carne, niente pesce, niente uova."</i> (We're vegetarian: no meat, no fish, no eggs.)</p></div>
-  </div></details>
-
-  <details class="ref"><summary>Trains, buses and passes <span class="plus">+</span></summary><div class="inner">
+</section>
+<section class="tab" id="tab-transport" hidden>
+  <h2>Trains, buses &amp; boats</h2>
+  
     <div class="callout"><b>The Venice boat pass, explained simply</b><p>In Venice the buses are boats, called water-buses (vaporetto). The pass is a ticket card that lets you ride any of them as often as you like for a set number of days. You each need one.</p><ul><li><b>Where to buy:</b> the ACTV ticket booth or machine right outside Venice train station, by the boat stop. There are also booths at the airport and Piazzale Roma. Or buy it online before the trip at <a href="https://www.veneziaunica.it/en" target="_blank" rel="noopener">veneziaunica.it</a> and collect the card from a machine with your code.</li><li><b>Which one:</b> pick the number of days you're in Venice. 1 day ₹2,800 · 2 days ₹3,920 · 3 days ₹5,040 (per person).</li><li><b>How to use it:</b> tap the card on the round reader at the boat stop every time, before you get on.</li><li>It's already included in your route's total, under "Local buses &amp; boats".</li></ul></div>
     <div class="callout gold"><b>"Can't we just get one pass for everything?"</b><p>Sadly no such pass exists in Italy. Trains, and each city's buses, trams and boats, are run by different companies, and none of them share a ticket.</p></div>
     <div class="passbox">
@@ -268,14 +274,23 @@ details.ref>summary{grid-template-columns:1fr auto}
         <tr><td>Amalfi Coast buses</td><td><a href="https://www.sitasudtrasporti.it" target="_blank" rel="noopener">sitasudtrasporti.it</a></td><td class="r">₹200–500 pp</td><td>Fewer buses in winter. A private driver is far easier.</td></tr>
               </tbody></table></div>
     <p class="small muted">Train strikes (sciopero) happen in Italy. Check the Trenitalia news page a few days before each train.</p>
-  </div></details>
+  
+</section>
+<section class="tab" id="tab-book" hidden>
+  <h2>Book these, in this order</h2>
+  
+  <p class="muted">Tick them off as you go. Ticks are saved on this device only.</p>
+  <div class="check" id="todo"></div>
 
-  <details class="ref"><summary>Vegetarian food, city by city <span class="plus">+</span></summary><div class="inner">
-    <p class="muted small">Fully vegetarian or vegan places first, then good vegetarian-friendly ones. Tap a name to open it in Google Maps. Book dinner a day ahead where it says so.</p>
-    <div class="cards" id="food"></div>
-    <p class="small muted">Every normal pizzeria works too: Margherita, Marinara and verdure pizzas are vegetarian. Look for "pasta al pomodoro", "cacio e pepe", "ribollita" (Florence soup), "risotto ai funghi". More places: <a href="https://www.happycow.net" target="_blank" rel="noopener">happycow.net</a>.</p>
+</section>
+<section class="tab" id="tab-info" hidden>
+  <h2>Good to know</h2>
+  <details class="ref" open><summary>Things to sort out first <span class="plus">+</span></summary><div class="inner">
+    <div class="callout warn"><b>Visa: France visa, but most nights in Italy</b><p>Schengen rules say the visa should come from the country of the main stay. Your visa is French and almost every night is in Italy. You can still enter at Paris, but the border officer may ask why. Carry printed hotel bookings and the return ticket, and if you want certainty, ask VFS or the French consulate before booking anything non-refundable. I'm not a lawyer, so treat this as a flag to check, not advice.</p></div>
+    <div class="callout"><b>Luggage</b><p>The Gulf Air fare is "Economy Light". Check on <a href="https://www.gulfair.com" target="_blank" rel="noopener">gulfair.com</a> how many checked kilos it includes. The Paris → Italy flights in every route are hand-luggage-only fares, so I've added about ₹9,000 for two checked bags in every cost.</p></div>
+    <div class="callout"><b>Lounges</b><p>Durva is checking lounge access for you at Paris CDG (helpful on the same-day routes, where you wait a few hours), Paris Orly and Milan Malpensa.</p></div>
+    
   </div></details>
-
   <details class="ref"><summary>Main sights and where to get tickets <span class="plus">+</span></summary><div class="inner">
     <div class="tbl"><table>
       <thead><tr><th>Sight</th><th>Book at</th><th>Closed</th><th>Tip</th></tr></thead>
@@ -290,7 +305,6 @@ details.ref>summary{grid-template-columns:1fr auto}
         <tr><td><a href="https://www.google.com/maps/search/?api=1&query=Gondola+station+Venice" target="_blank" rel="noopener">📍 Gondola, Venice</a></td><td>Official gondola stations</td><td>—</td><td>Fixed price per boat: ₹10,080 for 30 min by day, ₹12,320 after 7pm.</td></tr>
       </tbody></table></div>
   </div></details>
-
   <details class="ref"><summary>December things to expect <span class="plus">+</span></summary><div class="inner">
     <ul>
       <li><b>Weather on each day card</b> shows the <i>typical</i> early-December high/low and how often it rains. A real forecast only exists about 10 days before, so tap the chip for the live one closer to the time.</li>
@@ -303,6 +317,7 @@ details.ref>summary{grid-template-columns:1fr auto}
     </ul>
   </div></details>
 </section>
+</main>
 
 <footer>
   <p>Money is in rupees for 2 people, using €1 = ₹112 and £1 = ₹128 (today's rate plus about 3% card fees). Food is budgeted at ₹8,400 a day for both if you eat out every meal. Use the "How do you like to eat?" buttons at the top to lower it. Flights were checked on Google Flights on 16 Oct 2026 and prices move daily.</p>
@@ -323,32 +338,32 @@ const lakh=n=>"₹"+(n/100000).toFixed(2)+"L";
 const HOTEL={
   paris_cdg:{city:"Paris CDG",name:"Mercure Paris CDG Airport & Convention",q:"Mercure Paris CDG Airport Convention Roissypole",walk:"2 min walk to the free CDGVAL airport train (Roissypôle stop), which links all terminals",bk:3360,rating:"4.2",n:82*GBP,tax:10,alt:"Courtyard by Marriott Paris CDG Central Airport",altq:"Courtyard Paris Charles de Gaulle Central Airport"},
   paris_ory:{city:"Paris Orly",name:"ibis Paris Coeur d'Orly Airport",q:"ibis Paris Coeur d'Orly Airport",walk:"About 5 min walk to Orly terminals; Orlyval and tram stop next to it",bk:3360,rating:"3.8",n:83*GBP,tax:10,alt:"ibis budget Paris Coeur d'Orly Airport",altq:"ibis budget Paris Coeur d'Orly Airport"},
-  rome:{city:"Rome",name:"UNA Hotels Decò Roma",q:"UNA Hotels Deco Roma Via Giovanni Amendola 57",walk:"2 min walk to Roma Termini: metro lines A and B, airport train, all fast trains",bk:3360,rating:"4.4",n:135*GBP,tax:15,alt:"Best Western Premier Hotel Royal Santina (3 min to Termini, lift ✓)",altq:"Best Western Premier Hotel Royal Santina Rome"},
+  rome:{city:"Rome",name:"UNA Hotels Decò Roma",q:"UNA Hotels Deco Roma Via Giovanni Amendola 57",walk:"2 min walk to Roma Termini: metro lines A and B, airport train, all fast trains",bk:3360,rating:"4.4",n:107*GBP,tax:15,alt:"Best Western Premier Hotel Royal Santina (3 min to Termini, lift ✓)",altq:"Best Western Premier Hotel Royal Santina Rome"},
   florence:{city:"Florence",name:"c-hotels Joy Firenze",q:"c-hotels Joy Via degli Orti Oricellari 30 Florence",walk:"3 min walk to Santa Maria Novella station: trains, trams, buses; Duomo 15 min on foot",bk:3360,rating:"4.6",n:86*GBP,tax:14,alt:"Hotel Adler Cavalieri (by the station, breakfast incl.; check lift)",altq:"Hotel Adler Cavalieri Florence"},
-  venice:{city:"Venice",name:"Hotel Principe",q:"Hotel Principe Lista di Spagna 146 Venice",walk:"3 min walk to Venezia Santa Lucia station and the Ferrovia water-bus stop",bk:0,rating:"4.1",n:95*GBP,tax:9,alt:"Hotel Carlton on the Grand Canal (by the station; check lift)",altq:"Hotel Carlton on the Grand Canal Venice"},
+  venice:{city:"Venice",name:"Hotel Principe",q:"Hotel Principe Lista di Spagna 146 Venice",walk:"3 min walk to Venezia Santa Lucia station and the Ferrovia water-bus stop",bk:0,rating:"4.1",n:89*GBP,tax:9,alt:"Hotel Carlton on the Grand Canal (by the station; check lift)",altq:"Hotel Carlton on the Grand Canal Venice"},
   milan:{city:"Milan",name:"Hotel Berna",q:"Hotel Berna Via Napo Torriani 18 Milan",walk:"3–4 min walk to Milano Centrale: metro M2 and M3, Malpensa Express",bk:3360,rating:"4.5",n:78*GBP,tax:12,alt:"Starhotels E.c.ho. (by Centrale, breakfast incl.; check lift)",altq:"Starhotels Echo Milan"},
-  sorrento:{city:"Sorrento",name:"Hotel Antiche Mura",q:"Hotel Antiche Mura Via Fuorimura 7 Sorrento",walk:"2 min to Piazza Tasso buses; 5–6 min walk to the train station",bk:0,rating:"4.7",n:113*GBP,tax:6,alt:"Hotel Sorrento City (near station; check lift)",altq:"Hotel Sorrento City Corso Italia"}
+  sorrento:{city:"Sorrento",name:"Hotel Antiche Mura",q:"Hotel Antiche Mura Via Fuorimura 7 Sorrento",walk:"2 min to Piazza Tasso buses; 5–6 min walk to the train station",bk:0,rating:"4.7",n:115*GBP,tax:6,alt:"Hotel Sorrento City (near station; check lift)",altq:"Hotel Sorrento City Corso Italia"}
 };
 /* legs: [label, euros for 2] */
 const LEG={
   fco:["Rome airport → Termini, Leonardo Express",28], vce:["Venice airport → Piazzale Roma bus",20], lin:["Linate → city, metro M4",4.4],
-  nap:["Naples airport → Sorrento, Curreri bus",20], cdg_ory:["CDG → Orly transfer (taxi)",70],
+  nap:["Naples airport → Sorrento, Curreri bus",20], cdg_ory:["CDG → Orly by RER B + Orlyval",50],
   rf:["Rome ↔ Florence fast train",50], fv:["Florence ↔ Venice fast train",60], vm:["Venice → Milan fast train",50],
   rm:["Rome → Milan fast train",70], fm:["Florence → Milan fast train",50], pisa:["Florence ↔ Pisa return, regional",36],
   mxp:["Milan → Malpensa Express",30], sor_rome:["Sorrento → Naples → Rome trains",59]
 };
 const LOCAL={rome3:["Rome 72h pass ×2",44],rome2:["Rome 48h pass ×2",30],ven3:["Venice 3-day ACTV ×2",90],ven2:["Venice 2-day ACTV ×2",70],flo:["Florence buses",9],mil:["Milan 24h ×2",15.2],sor:["Sorrento local trains/buses",27]};
-const SIGHT={rome3:16000,rome2:12000,flo:10000,ven:8000,mil:3000,sor:35000};
-const SIGHTN={rome3:"Rome: Colosseum tour + Vatican",rome2:"Rome: Colosseum + Vatican",flo:"Florence: Uffizi + Pisa tower",ven:"Venice: Doge's Palace + basilica",mil:"Milan: Duomo rooftop",sor:"Amalfi Coast private driver day"};
+const SIGHT={rome3:16000,rome2:12000,flo:10000,ven:8000,mil:3000,sor:6000};
+const SIGHTN={rome3:"Rome: Colosseum tour + Vatican",rome2:"Rome: Colosseum + Vatican",flo:"Florence: Uffizi + Pisa tower",ven:"Venice: Doge's Palace + basilica",mil:"Milan: Duomo rooftop",sor:"Amalfi Coast by SITA bus + Pompeii"};
 
 const FLIGHT={
  A1:{t:"Air France · Sat 5 Dec · CDG 12:55 → Rome FCO 15:00",p:30960,why:"Same airport you land at, no rush after landing at 06:45."},
  A2:{t:"Air France · Sat 5 Dec · CDG 13:20 → Venice VCE 15:00",p:21584,why:"Same airport you land at. Cheaper easyJet leaves from Orly (needs a transfer)."},
  A3:{t:"Air France · Sat 5 Dec · CDG 12:25 → Milan Linate 13:55",p:19454,why:"Linate is on the metro, 15 min to the centre."},
- A4:{t:"easyJet · Sat 5 Dec · Paris Orly 11:50 → Naples 14:00",p:9408,why:"Needs a 1-hour taxi from CDG to Orly first. Air France from CDG is ₹42,040."},
+ A4:{t:"easyJet · Sat 5 Dec · Paris Orly 11:50 → Naples 14:00",p:9408,why:"Needs a 1h15 train ride from CDG to Orly first (RER B + Orlyval). Air France from CDG is ₹42,040."},
  B1:{t:"Air France · Sun 6 Dec · CDG 09:20 → Rome FCO 11:30",p:28616,why:"Easy morning from the airport hotel."},
  B2:{t:"easyJet · Sun 6 Dec · CDG 07:55 → Venice VCE 09:40",p:8661,why:"Cheapest, but an early start. Air France 09:25 → 11:10 is ₹29,255 if that's too early."},
- C1:{t:"easyJet · Sat 5 Dec · Paris Orly 11:50 → Naples 14:00",p:9408,why:"Needs a 1-hour taxi from CDG to Orly first. Air France from CDG is ₹42,040."},
+ C1:{t:"easyJet · Sat 5 Dec · Paris Orly 11:50 → Naples 14:00",p:9408,why:"Needs a 1h15 train ride from CDG to Orly first (RER B + Orlyval). Air France from CDG is ₹42,040."},
  C2:{t:"easyJet · Sun 6 Dec · Paris Orly 09:35 → Naples 11:45",p:9088,why:"Stay near Orly the night before. Air France from CDG is ₹36,926+."},
  B4:{t:"easyJet · Sun 6 Dec · Paris Orly 09:35 → Naples 11:45",p:9088,why:"Stay near Orly the night before. Air France from CDG is ₹36,926+."}
 };
@@ -414,15 +429,15 @@ function costs(id){
 const D=(date,city,title,o)=>Object.assign({date,city,title},o);
 const ARRIVE_PARIS="Land at Paris CDG 06:45 after the overnight Gulf Air flight via Bahrain. Passport control (show France visa + hotel bookings), collect bags.";
 const rome={
- arrive:(how)=>({go:how,see:["Check in at UNA Hotels Decò, 2 minutes from Termini, and rest.","Evening: taxi or bus 40 to Trevi Fountain, then a slow walk to the Pantheon and Piazza Navona's Christmas market."],eat:"Dinner near the Pantheon. Rifugio Romano (vegan Roman classics) or Bibliothè (Indian vegetarian, lunchtime)."}),
+ arrive:(how)=>({go:how,see:["Check in at UNA Hotels Decò, 2 minutes from Termini, and rest.","Evening: bus 40 Express from outside Termini towards the centre, hop off for Trevi Fountain, then a slow walk to the Pantheon and Piazza Navona's Christmas market."],eat:"Dinner near the Pantheon. Rifugio Romano (vegan Roman classics) or Bibliothè (Indian vegetarian, lunchtime)."}),
  ancient:{see:["Morning: guided tour of the Colosseum + Roman Forum (book on coopculture.it). Lots of walking on uneven stones, wear good shoes.","Afternoon: rest at the hotel.","Evening: Spanish Steps and Via del Corso Christmas lights."],eat:"Lunch: pizza al taglio. Dinner: Il Margutta, vegetarian since 1979, near the Spanish Steps."},
  vatican:{see:["Morning: Vatican Museums + Sistine Chapel, timed ticket (museivaticani.va). Shoulders and knees covered.","Walk into St Peter's Basilica after.","Or take the Big Bus hop-on hop-off for a sit-down tour of the city."],eat:"Lunch: Pizzarium (Bonci's famous slices) near the Vatican. Dinner: Buddy Veggy (vegan, central)."},
  anniv:{see:["Slow morning, long breakfast.","Late morning: St Peter's Square and the Basilica (free).","Afternoon: rest, then sunset from the Pincio terrace above Piazza del Popolo.","Evening: your anniversary dinner. Pick the one you like in the Food section below."],eat:"Mater Terrae, Hotel Raphaël, Largo Febo 2 (about ₹14,560 per person)."}
 };
 const flo={
- arrive:(from)=>({go:from,see:["Check in at c-hotels Joy, 3 minutes from the station.","Afternoon walk: Duomo → Piazza della Signoria → Ponte Vecchio.","Sunset at Piazzale Michelangelo (bus 12 or 13, or taxi)."],eat:"Dinner: Brac (vegetarian, book ahead)."}),
+ arrive:(from)=>({go:from,see:["Check in at c-hotels Joy, 3 minutes from the station.","Afternoon walk: Duomo → Piazza della Signoria → Ponte Vecchio.","Sunset at Piazzale Michelangelo (bus 12 or 13)."],eat:"Dinner: Brac (vegetarian, book ahead)."}),
  uffizi:{see:["Morning: Uffizi Gallery (book a morning slot, uffizi.it).","Afternoon: the Accademia to see Michelangelo's David, or just rest.","Evening: Christmas lights around Piazza della Repubblica."],eat:"Lunch: Veg e Veg, upstairs at Mercato Centrale. Dinner: Konnubio (Tuscan + vegetarian, 5 min from the station)."},
- pisa:{go:"Regional train Florence SMN → Pisa Centrale, about 1 hour, ~₹1,010 each way. No booking needed, stamp the paper ticket.",see:["Taxi or 25-min walk from Pisa Centrale to the Leaning Tower.","Climb the tower only if your knees are happy (timed ticket, opapisa.it). The cathedral and lawn photos are free.","Back in Florence by mid-afternoon to rest."],eat:"Dinner: Il Vegetariano (Florence's first, since 1981) or Ruth's (kosher vegetarian)."}
+ pisa:{go:"Regional train Florence SMN → Pisa Centrale, about 1 hour, ~₹1,010 each way. No booking needed, stamp the paper ticket.",see:["From Pisa Centrale, the LAM Rossa bus to the Leaning Tower (~10 min), or a 25-min flat walk.","Climb the tower only if your knees are happy (timed ticket, opapisa.it). The cathedral and lawn photos are free.","Back in Florence by mid-afternoon to rest."],eat:"Dinner: Il Vegetariano (Florence's first, since 1981) or Ruth's (kosher vegetarian)."}
 };
 const ven={
  arrive:(how)=>({go:how,see:["Check in at Hotel Principe on the Grand Canal, steps from the station. Venice has bridges with steps everywhere: this hotel avoids them.","Buy your water-bus pass (one each) at the ACTV ticket booth or machine right outside the station, by the boat stop. Ask for the pass for the number of days you're in Venice. Tap it on the round reader before every boat.","Evening: vaporetto Line 1, the slow boat down the whole Grand Canal to St Mark's. Sit outside at the front."],eat:"Dinner: Osteria La Zucca (vegetable-led, book ahead)."}),
@@ -432,16 +447,16 @@ const ven={
 };
 const mil={
  last:(how)=>({go:how,see:["Check in at Hotel Berna, 3 minutes from Centrale.","Metro M3 to Duomo: cathedral rooftop by lift, then Galleria Vittorio Emanuele II in its Christmas lights.","Early night. Pack."],eat:"Dinner: Govinda (Hare Krishna centre, Indian vegetarian thali) or Joia, Europe's first Michelin-starred vegetarian restaurant (closed Sundays)."}),
- fly:{go:"Malpensa Express from Milano Centrale, about 50 min. Take the 08:25 or earlier to reach Malpensa by ~09:20 for the 11:40 Gulf Air flight.",see:["Breakfast early. Taxi is ~₹10,640 fixed if bags are heavy."],eat:"Airport lounge (check FoundersCard)."}
+ fly:{go:"Malpensa Express from Milano Centrale, about 50 min. Take the 08:25 or earlier to reach Malpensa by ~09:20 for the 11:40 Gulf Air flight.",see:["Breakfast early. Malpensa Express platforms are inside Centrale, 3–4 min from your hotel."],eat:"Airport lounge (check FoundersCard)."}
 };
 const sor={
  arrive:(how)=>({go:how,see:["Check in at Hotel Antiche Mura, near Piazza Tasso.","Evening: walk the Christmas lights in Piazza Tasso, where the big tree does a music-and-light show every hour."],eat:"Dinner: Mondo Bio, Sorrento's only all-vegetarian place. Local dishes like gnocchi alla sorrentina and linguine alla Nerano are vegetarian too."}),
- amalfi:{see:["Day on the Amalfi Coast with a private driver (ask the hotel, roughly ₹33,600–44,800 for the day). Stops: Positano viewpoint, Amalfi town, Ravello gardens.","Winter is quiet, roads are empty, some shops are shut. Ferries don't run, SITA buses run less often."],eat:"Lunch in Amalfi town, which stays lively in winter."},
+ amalfi:{see:["Day on the Amalfi Coast by SITA bus from outside Sorrento station. Positano is ~50 min, Amalfi town ~1h40. Sit on the right side for sea views.","Buy bus tickets at the station bar or newsagent before you board. Winter buses run less often, so check the return time when you arrive.","Ferries don't run in winter. Some shops are shut, roads are quiet."],eat:"Lunch in Amalfi town, which stays lively in winter."},
  anniv:{see:["Slow morning by the sea, coffee in Piazza Tasso.","Late morning: Villa Comunale gardens, view of the Bay of Naples and Vesuvius.","Afternoon: rest, or a gentle half-day to Pompeii by Circumvesuviana train.","Sunset (about 4:40pm) from the Villa Comunale terrace.","Evening: your anniversary dinner. Pick the one you like in the Food section below."],eat:"Classic vegetarian dishes: lemon risotto, gnocchi alla sorrentina, delizia al limone for dessert."}
 };
 const parisRest={go:ARRIVE_PARIS+" Take the free CDGVAL airport train to the Roissypôle stop, then a 2-minute walk to the Mercure.",see:["Sleep, shower, proper rest. That's your only job today.","Only if you feel fresh: RER B train into Paris (35–50 min) to see the Eiffel Tower sparkle on the hour after dark. Otherwise skip."],eat:"Hotel restaurant, or Indian takeaway delivered to the hotel."};
 
-const PISAUFF={go:"Early regional train Florence SMN → Pisa Centrale (about 1 hour, ~₹1,010 each way). No booking, stamp the paper ticket.",see:["8:00 train, taxi to the Leaning Tower. Climb it only if your knees are happy (timed ticket, opapisa.it).","Back in Florence by about 1pm, lunch, short rest.","3pm: Uffizi Gallery (book the slot).","Sunset walk over Ponte Vecchio."],eat:"Lunch: Veg e Veg at Mercato Centrale. Dinner: Brac (book)."};
+const PISAUFF={go:"Early regional train Florence SMN → Pisa Centrale (about 1 hour, ~₹1,010 each way). No booking, stamp the paper ticket.",see:["8:00 train, then the LAM Rossa bus (~10 min) or a 25-min walk to the Leaning Tower. Climb it only if your knees are happy (timed ticket, opapisa.it).","Back in Florence by about 1pm, lunch, short rest.","3pm: Uffizi Gallery (book the slot).","Sunset walk over Ponte Vecchio."],eat:"Lunch: Veg e Veg at Mercato Centrale. Dinner: Brac (book)."};
 const DAYS={
  A1:[
   D(["Sat","5"],"Paris → Rome","Land in Paris, fly to Rome",Object.assign(rome.arrive(ARRIVE_PARIS+" Wait in the lounge, then Air France CDG 12:55 → Rome 15:00. Leonardo Express to Termini."),{see:["Check in, rest. Early dinner nearby and sleep."]})),
@@ -483,10 +498,10 @@ const DAYS={
   D(["Tue","15"],"Milan → Mumbai","Fly home",mil.fly)
  ],
  A4:[
-  D(["Sat","5"],"Paris → Sorrento","Land in Paris, fly to Naples",sor.arrive(ARRIVE_PARIS+" Taxi CDG → Orly (about 1 hour, pre-book). easyJet Orly 11:50 → Naples 14:00. Curreri bus to Sorrento, about 1 hour.")),
+  D(["Sat","5"],"Paris → Sorrento","Land in Paris, fly to Naples",sor.arrive(ARRIVE_PARIS+" RER B train from CDG to Antony, then the Orlyval shuttle train to Orly, about 1h15 on one combined ticket. easyJet Orly 11:50 → Naples 14:00. Curreri bus to Sorrento, about 1 hour.")),
   D(["Sun","6"],"Sorrento","Amalfi Coast drive",sor.amalfi),
   D(["Mon","7"],"Sorrento","♥ Anniversary by the sea",Object.assign({anniv:true},sor.anniv)),
-  D(["Tue","8"],"Sorrento → Rome","Train to Rome",rome.arrive("Circumvesuviana train Sorrento → Naples (about 1h10, or a private car ~₹11,200 with bags), then fast train Naples → Rome, 1h10. Holiday today, book early.")),
+  D(["Tue","8"],"Sorrento → Rome","Train to Rome",rome.arrive("Circumvesuviana train Sorrento → Naples (about 1h10), then fast train Naples → Rome, 1h10. Holiday today, book early.")),
   D(["Wed","9"],"Rome","Colosseum + Vatican, one big day",{see:["Morning: Colosseum + Forum tour.","Afternoon: Vatican Museums timed entry.","This is the tiring day of this route."],eat:"Dinner: Il Margutta."}),
   D(["Thu","10"],"Rome → Florence","Train to Florence",flo.arrive("Morning fast train Rome → Florence SMN, 1h35.")),
   D(["Fri","11"],"Florence","Uffizi and the city",flo.uffizi),
@@ -522,10 +537,10 @@ const DAYS={
   D(["Tue","15"],"Milan → Mumbai","Fly home",mil.fly)
  ],
  C1:[
-  D(["Sat","5"],"Paris → Sorrento","Land in Paris, fly to Naples",sor.arrive(ARRIVE_PARIS+" Taxi CDG → Orly (about 1 hour, pre-book). easyJet Orly 11:50 → Naples 14:00. Curreri bus to Sorrento, about 1 hour.")),
+  D(["Sat","5"],"Paris → Sorrento","Land in Paris, fly to Naples",sor.arrive(ARRIVE_PARIS+" RER B train from CDG to Antony, then the Orlyval shuttle train to Orly, about 1h15 on one combined ticket. easyJet Orly 11:50 → Naples 14:00. Curreri bus to Sorrento, about 1 hour.")),
   D(["Sun","6"],"Sorrento","Amalfi Coast drive",sor.amalfi),
   D(["Mon","7"],"Sorrento","♥ Anniversary by the sea",Object.assign({anniv:true},sor.anniv)),
-  D(["Tue","8"],"Sorrento → Rome","Train to Rome",rome.arrive("Circumvesuviana train Sorrento → Naples (about 1h10, or a private car with bags), then fast train Naples → Rome, 1h10. Holiday today, book early.")),
+  D(["Tue","8"],"Sorrento → Rome","Train to Rome",rome.arrive("Circumvesuviana train Sorrento → Naples (about 1h10), then fast train Naples → Rome, 1h10. Holiday today, book early.")),
   D(["Wed","9"],"Rome","Colosseum + Vatican, one big day",{see:["Morning: Colosseum + Forum tour.","Afternoon: Vatican Museums timed entry.","Evening: Trevi Fountain, then early dinner."],eat:"Dinner: Il Margutta."}),
   D(["Thu","10"],"Rome → Florence","Train to Florence",flo.arrive("Morning fast train Rome → Florence SMN, 1h35.")),
   D(["Fri","11"],"Florence + Pisa","Pisa morning, Uffizi afternoon",PISAUFF),
@@ -535,10 +550,10 @@ const DAYS={
   D(["Tue","15"],"Milan → Mumbai","Fly home",mil.fly)
  ],
  C2:[
-  D(["Sat","5"],"Paris (Orly)","Land, move to Orly, rest",Object.assign({},parisRest,{go:ARRIVE_PARIS+" Taxi CDG → Orly hotel, about 1 hour (pre-book). The ibis Coeur d'Orly is about a 5-minute walk from the terminal."})),
-  D(["Sun","6"],"Paris → Amalfi → Sorrento","Fly to Naples, scenic Amalfi drive",{go:"easyJet Orly 09:35 → Naples 11:45. A pre-booked private driver meets you at arrivals (ask your Sorrento hotel to arrange it).",see:["The driver takes the long way: along the Amalfi Coast road with photo stops above Positano and in Amalfi town.","Arrive Sorrento around sunset (4:40pm), check in at Hotel Antiche Mura.","Evening: Piazza Tasso Christmas tree light show."],eat:"Dinner: Mondo Bio (all vegetarian) or any trattoria for gnocchi alla sorrentina."}),
-  D(["Mon","7"],"Sorrento","♥ Anniversary by the sea",Object.assign({anniv:true},sor.anniv)),
-  D(["Tue","8"],"Sorrento → Rome","Train to Rome",rome.arrive("Circumvesuviana train Sorrento → Naples (about 1h10, or a private car with bags), then fast train Naples → Rome, 1h10. Holiday today, book early.")),
+  D(["Sat","5"],"Paris (Orly)","Land, move to Orly, rest",Object.assign({},parisRest,{go:ARRIVE_PARIS+" RER B train from CDG to Antony, then the Orlyval shuttle train to Orly, about 1h15 on one combined ticket. The ibis Coeur d'Orly is about a 5-minute walk from the terminal."})),
+  D(["Sun","6"],"Paris → Sorrento","Fly to Naples, bus to Sorrento",{go:"easyJet Orly 09:35 → Naples 11:45. Curreri bus from outside Naples arrivals straight to Sorrento, about 1 hour.",see:["Check in at Hotel Antiche Mura on Piazza Tasso and rest.","Late afternoon: 5-min walk to Villa Comunale for the sunset over the bay. Amalfi Coast bus trip is tomorrow morning.","Evening: Piazza Tasso Christmas tree light show."],eat:"Dinner: Mondo Bio (all vegetarian) or any trattoria for gnocchi alla sorrentina."}),
+  D(["Mon","7"],"Sorrento","♥ Anniversary by the sea",Object.assign({anniv:true},sor.anniv,{see:["Optional gentle morning: SITA bus from Sorrento station to Positano (~50 min) for the famous view, back by lunch.",...sor.anniv.see.slice(2)]})),
+  D(["Tue","8"],"Sorrento → Rome","Train to Rome",rome.arrive("Circumvesuviana train Sorrento → Naples (about 1h10), then fast train Naples → Rome, 1h10. Holiday today, book early.")),
   D(["Wed","9"],"Rome","Colosseum + Vatican, one big day",{see:["Morning: Colosseum + Forum tour.","Afternoon: Vatican Museums timed entry.","Evening: Trevi Fountain, then early dinner."],eat:"Dinner: Il Margutta."}),
   D(["Thu","10"],"Rome → Florence","Train to Florence",flo.arrive("Morning fast train Rome → Florence SMN, 1h35.")),
   D(["Fri","11"],"Florence + Pisa","Pisa morning, Uffizi afternoon",PISAUFF),
@@ -548,7 +563,7 @@ const DAYS={
   D(["Tue","15"],"Milan → Mumbai","Fly home",mil.fly)
  ],
  B4:[
-  D(["Sat","5"],"Paris (Orly)","Land, move to Orly, rest",Object.assign({},parisRest,{go:ARRIVE_PARIS+" Taxi CDG → Orly hotel, about 1 hour (pre-book). The ibis Coeur d'Orly is about a 5-minute walk from the terminal."})),
+  D(["Sat","5"],"Paris (Orly)","Land, move to Orly, rest",Object.assign({},parisRest,{go:ARRIVE_PARIS+" RER B train from CDG to Antony, then the Orlyval shuttle train to Orly, about 1h15 on one combined ticket. The ibis Coeur d'Orly is about a 5-minute walk from the terminal."})),
   D(["Sun","6"],"Paris → Sorrento","Fly to Naples, bus to Sorrento",sor.arrive("easyJet Orly 09:35 → Naples 11:45. Curreri bus to Sorrento, about 1 hour.")),
   D(["Mon","7"],"Sorrento","♥ Anniversary by the sea",Object.assign({anniv:true},sor.anniv)),
   D(["Tue","8"],"Sorrento","Amalfi Coast drive",sor.amalfi),
@@ -580,7 +595,7 @@ function dayImg(d){const t=(d.title+" "+d.city).toLowerCase();
  const parts=d.city.split("→").map(x=>x.trim().replace(/ \(.*\)/,""));const last=parts[parts.length-1];
  return CITYIMG[last]||CITYIMG[parts[0]]||"pasta";}
 const bg=k=>`background-image:url(${IMG[k]})`;
-document.getElementById("hero").innerHTML=[["gondola","Venice"],["florence","Florence"],["rome","Rome"]].map(([k,c])=>`<div style="${bg(k)}" role="img" aria-label="${CAP[k]}"><span>${c}</span></div>`).join("");
+(document.getElementById("hero")||{}).innerHTML=[["gondola","Venice"],["florence","Florence"],["rome","Rome"]].map(([k,c])=>`<div style="${bg(k)}" role="img" aria-label="${CAP[k]}"><span>${c}</span></div>`).join("");
 const EXTRAS=[
  {t:"Private gondola ride, 30 min by day (price per boat)",p:"₹10,080",only:"Venice"},
  {t:"Half-day to Murano (glass-blowing) and Burano (colourful houses)",p:"Free with your boat pass",only:"Venice"},
@@ -588,7 +603,7 @@ const EXTRAS=[
  
  {t:"Big Bus hop-on hop-off day in Rome",p:"Price on bigbustours.com",only:"Rome"},
  {t:"Lunch at Joia, Milan's Michelin-starred vegetarian (weekday lunch menu)",p:"splurge",only:"Milan"},
- {t:"Private driver for a full Amalfi Coast day",p:"~₹33,600–44,800",only:"Sorrento"},
+ 
  {t:"Half-day to Pompeii by train from Sorrento",p:"train + entry",only:"Sorrento"},
  {t:"Upgrade one night to a canal-view or sea-view room",p:"~₹5,000–8,000"},
  {t:"Or simply keep it, and the trip lands closer to ₹1.5L each",p:"🙂"}
@@ -641,9 +656,10 @@ function foodBlock(d0){
     alt=`Fancy one meal out today? ${d.eat}`;
   }
   if(false){const pool=DAY_EXTRA[k];const e=pool[(parseInt(d.date[1])||0)%pool.length];extra=`<div class="blk"><span>Extra</span><div class="callout" style="padding:10px 12px"><b>💡 With today's food saving you could add:</b><p>${e[0]} · <span class="num">${e[1]}</span></p></div></div>`;}
-  return `<div class="blk"><span>Food</span><div>${main}<p class="small muted" style="margin-top:6px">↪ Or instead: ${alt}</p></div></div>${extra}`;
+  return `<details class="sub"${d.anniv?" open":""}><summary>${d.anniv?"♥ Anniversary dinner & food today":"🍽️ Food today"} <span class="plus">+</span></summary><div>${main}<p class="small muted" style="margin-top:6px">↪ Or instead: ${alt}</p></div></details>${extra}`;
 }
 function foodPicker(){
+  const fn=document.getElementById("foodnow"); if(fn) fn.textContent="· "+FOODMODES[FOODMODE].n;
   document.getElementById("foodpick").innerHTML=Object.entries(FOODMODES).map(([k,m])=>`<button data-food="${k}" aria-pressed="${k===FOODMODE}"><b>${m.n} · <span class="num">${m.per}</span>/day for 2</b><span class="small muted">${m.d}</span></button>`).join("");
   document.querySelectorAll("[data-food]").forEach(b=>b.addEventListener("click",()=>{FOODMODE=b.dataset.food;try{localStorage.setItem("italy-food",FOODMODE)}catch(e){};render()}));
 }
@@ -678,8 +694,8 @@ const EXPERIENCES={"Rome": [["Ancient Roman mosaic workshop", "Make your own sma
 const CLIMATE={paris_cdg:[8,3,"1 in 3"],paris_ory:[8,3,"1 in 3"],rome:[14,5,"1 in 3"],florence:[11,2,"1 in 3"],venice:[8,2,"1 in 4"],milan:[8,1,"1 in 5"],sorrento:[15,9,"1 in 3"]};
 const WNAME={paris_cdg:"Paris",paris_ory:"Paris",rome:"Rome",florence:"Florence",venice:"Venice",milan:"Milan",sorrento:"Sorrento"};
 function wxChip(d){const k=OVERNIGHT(d),c=CLIMATE[k];if(!c)return"";return `<a class="wx" href="https://www.google.com/search?q=${encodeURIComponent("weather "+WNAME[k])}" target="_blank" rel="noopener" title="Typical early-December weather. Tap for the live forecast.">🌡 ${c[0]}° / ${c[1]}° · ☔ ${c[2]} days</a>`;}
-const GETTING={"rome": [["Trevi", "Trevi Fountain", "Metro line A (red) from Termini to Barberini, 2 stops (~5 min), then 7 min walk. Taxi ~10 min."], ["Pantheon|Navona|Mater Terrae", "Pantheon / Piazza Navona", "Bus 40 Express from Termini (outside the station) to Largo di Torre Argentina, ~15 min, then 5 min walk. At night, take a taxi (~15 min)."], ["Colosseum|Forum", "Colosseum & Roman Forum", "Metro line B (blue) from Termini to Colosseo, 2 stops (~5 min). The Colosseum is right outside the exit."], ["Vatican|St Peter|Pizzarium", "Vatican & St Peter's", "Metro line A (red) from Termini to Ottaviano (or Cipro for the Museums), ~15 min, then 7–10 min walk."], ["Spanish Steps|Margutta|Pincio|Popolo|Via del Corso", "Spanish Steps / Il Margutta / Pincio", "Metro line A (red) from Termini to Spagna, 3 stops (~7 min). The exit is at the top of the Spanish Steps."], ["Rifugio Romano", "Rifugio Romano", "About 5–10 min walk from your hotel, near Termini."], ["Leonardo Express|airport", "Rome airport (Fiumicino)", "Leonardo Express train from Termini platform 23/24, every 15–30 min, 32 min non-stop."]], "florence": [["Duomo|Piazza della Repubblica", "Duomo", "10–12 min walk from your hotel, flat streets."], ["Signoria|Ponte Vecchio|Uffizi", "Piazza della Signoria, Uffizi, Ponte Vecchio", "15–20 min walk, all next to each other. Taxi rank outside Santa Maria Novella station if legs are tired."], ["Piazzale Michelangelo", "Piazzale Michelangelo", "Bus 12 from the station area, ~25 min, or taxi ~10 min (~₹1,700). Walk back down via the steps if you like."], ["Accademia", "Accademia (David)", "About 15 min walk."], ["Mercato Centrale|Veg e Veg|Konnubio", "Mercato Centrale / Konnubio", "5–8 min walk from your hotel."], ["Brac", "Brac (restaurant)", "About 20 min walk (near Santa Croce), or a short taxi."], ["Pisa", "Pisa", "Walk 3 min to Santa Maria Novella, regional train to Pisa Centrale (~1 hour, every 30 min). From Pisa Centrale, taxi 5 min or bus to the Leaning Tower, or 25 min walk."]], "venice": [["St Mark|Doge|Basilica", "St Mark's Square, Basilica, Doge's Palace", "Water-bus Line 1 from Ferrovia (outside the station) to San Marco, ~40 min, slow and very scenic. Line 2 is faster, ~25 min. Walking takes ~40 min with lots of bridges."], ["Rialto|Suso", "Rialto Bridge", "Water-bus Line 1 or 2 from Ferrovia to Rialto, ~15–20 min. Or ~25 min walk following the yellow 'Per Rialto' signs."], ["Murano|Burano|islands", "Murano & Burano", "Water-bus Line 3 or 4.1 from Ferrovia to Murano, ~20–25 min. From Murano Faro, Line 12 to Burano, ~35 min. Line 12 back to Fondamente Nove, then Line 4.2 to Ferrovia."], ["La Zucca", "Osteria La Zucca", "~12 min walk from your hotel: cross the Scalzi bridge by the station, then follow signs to San Giacomo dall'Orio."], ["Tecia Vegana|Dorsoduro|Frary", "Dorsoduro (La Tecia Vegana, Frary's)", "Water-bus Line 1 to Ca' Rezzonico, ~25 min, then 5 min walk to Campo Santa Margherita. Or ~20 min walk."], ["Ital India|Sullaluna|Cannaregio", "Cannaregio", "5–10 min walk along the canal from your hotel."], ["gondola", "Gondola", "Official gondola stations are all over Venice. There's one by the station and many around Rialto and St Mark's."], ["Grand Canal", "Grand Canal boat ride", "Water-bus Line 1 from Ferrovia, the stop right outside the station, 3 min from your hotel."]], "milan": [["Duomo|Galleria|Govinda", "Duomo & Galleria", "Metro M3 (yellow) from Centrale to Duomo, 4 stops (~8 min). Govinda is a 7 min walk from Duomo."], ["Joia", "Joia", "About 15 min walk, or metro M3 to Repubblica then 8 min walk."], ["Malpensa", "Malpensa airport", "Malpensa Express from Milano Centrale, every 30 min, ~50 min. Buy tickets at the red machines or on the app."]], "sorrento": [["Villa Comunale|sunset", "Villa Comunale (sea view)", "5 min walk from Piazza Tasso."], ["Piazza Tasso|Mondo Bio|trattoria", "Piazza Tasso", "Your hotel is right on it."], ["Pompeii", "Pompeii", "Walk 5–6 min to Sorrento station, Circumvesuviana train to Pompei Scavi, ~30 min. The entrance is right by the stop."], ["Amalfi|Positano|Ravello|driver", "Amalfi Coast", "Your private driver picks you up at the hotel. By bus, SITA buses leave from outside Sorrento station."]], "paris_cdg": [["Eiffel|RER", "Central Paris", "Free CDGVAL train to Terminal 2 or 3, then RER B into Paris, 35–50 min. Taxi has a fixed fare, about ₹6,000–7,000."]], "paris_ory": [["Eiffel|RER", "Central Paris", "Orlyval + RER B, or tram 7 + metro, ~45–60 min. Taxi has a fixed fare."]]};
-const TAXI={"rome": "Taxi ranks are outside Termini. Apps: FreeNow or itTaxi.", "florence": "Taxi rank outside Santa Maria Novella station. Florence taxis don't stop on the street, so call or use the itTaxi app.", "venice": "No cars or taxis in Venice. Water-buses and walking only. Water taxis exist but are very expensive.", "milan": "Taxi rank outside Centrale. Apps: FreeNow or itTaxi.", "sorrento": "Taxis wait in Piazza Tasso.", "paris_cdg": "Taxi ranks at every terminal.", "paris_ory": "Taxi ranks at every terminal."};
+const GETTING={"rome": [["Trevi", "Trevi Fountain", "Metro line A (red) from Termini to Barberini, 2 stops (~5 min), then 7 min walk."], ["Pantheon|Navona|Mater Terrae", "Pantheon / Piazza Navona", "Bus 40 Express from outside Termini to Largo di Torre Argentina, ~15 min, then 5 min walk. Same bus back."], ["Colosseum|Forum", "Colosseum & Roman Forum", "Metro line B (blue) from Termini to Colosseo, 2 stops (~5 min). The Colosseum is right outside the exit."], ["Vatican|St Peter|Pizzarium", "Vatican & St Peter's", "Metro line A (red) from Termini to Ottaviano (or Cipro for the Museums), ~15 min, then 7–10 min walk."], ["Spanish Steps|Margutta|Pincio|Popolo|Via del Corso", "Spanish Steps / Il Margutta / Pincio", "Metro line A (red) from Termini to Spagna, 3 stops (~7 min). The exit is at the top of the Spanish Steps."], ["Rifugio Romano", "Rifugio Romano", "About 5–10 min walk from your hotel, near Termini."], ["Leonardo Express|airport", "Rome airport (Fiumicino)", "Leonardo Express train from Termini platform 23/24, every 15–30 min, 32 min non-stop."]], "florence": [["Duomo|Piazza della Repubblica", "Duomo", "10–12 min walk from your hotel, flat streets."], ["Signoria|Ponte Vecchio|Uffizi", "Piazza della Signoria, Uffizi, Ponte Vecchio", "15–20 min walk on flat streets, all next to each other. Plenty of cafés to rest on the way."], ["Piazzale Michelangelo", "Piazzale Michelangelo", "Bus 12 or 13 from near the station, ~25 min. Walk back down via the steps if you like."], ["Accademia", "Accademia (David)", "About 15 min walk."], ["Mercato Centrale|Veg e Veg|Konnubio", "Mercato Centrale / Konnubio", "5–8 min walk from your hotel."], ["Brac", "Brac (restaurant)", "About 20 min walk (near Santa Croce)."], ["Pisa", "Pisa", "Walk 3 min to Santa Maria Novella, regional train to Pisa Centrale (~1 hour, every 30 min). Then the LAM Rossa bus to the Leaning Tower (~10 min) or a 25 min walk."]], "venice": [["St Mark|Doge|Basilica", "St Mark's Square, Basilica, Doge's Palace", "Water-bus Line 1 from Ferrovia (outside the station) to San Marco, ~40 min, slow and very scenic. Line 2 is faster, ~25 min. Walking takes ~40 min with lots of bridges."], ["Rialto|Suso", "Rialto Bridge", "Water-bus Line 1 or 2 from Ferrovia to Rialto, ~15–20 min. Or ~25 min walk following the yellow 'Per Rialto' signs."], ["Murano|Burano|islands", "Murano & Burano", "Water-bus Line 3 or 4.1 from Ferrovia to Murano, ~20–25 min. From Murano Faro, Line 12 to Burano, ~35 min. Line 12 back to Fondamente Nove, then Line 4.2 to Ferrovia."], ["La Zucca", "Osteria La Zucca", "~12 min walk from your hotel: cross the Scalzi bridge by the station, then follow signs to San Giacomo dall'Orio."], ["Tecia Vegana|Dorsoduro|Frary", "Dorsoduro (La Tecia Vegana, Frary's)", "Water-bus Line 1 to Ca' Rezzonico, ~25 min, then 5 min walk to Campo Santa Margherita. Or ~20 min walk."], ["Ital India|Sullaluna|Cannaregio", "Cannaregio", "5–10 min walk along the canal from your hotel."], ["gondola", "Gondola", "Official gondola stations are all over Venice. There's one by the station and many around Rialto and St Mark's."], ["Grand Canal", "Grand Canal boat ride", "Water-bus Line 1 from Ferrovia, the stop right outside the station, 3 min from your hotel."]], "milan": [["Duomo|Galleria|Govinda", "Duomo & Galleria", "Metro M3 (yellow) from Centrale to Duomo, 4 stops (~8 min). Govinda is a 7 min walk from Duomo."], ["Joia", "Joia", "About 15 min walk, or metro M3 to Repubblica then 8 min walk."], ["Malpensa", "Malpensa airport", "Malpensa Express from Milano Centrale, every 30 min, ~50 min. Buy tickets at the red machines or on the app."]], "sorrento": [["Villa Comunale|sunset", "Villa Comunale (sea view)", "5 min walk from Piazza Tasso."], ["Piazza Tasso|Mondo Bio|trattoria", "Piazza Tasso", "Your hotel is right on it."], ["Pompeii", "Pompeii", "Walk 5–6 min to Sorrento station, Circumvesuviana train to Pompei Scavi, ~30 min. The entrance is right by the stop."], ["Amalfi|Positano|Ravello|SITA", "Amalfi Coast", "SITA bus from outside Sorrento station: Positano ~50 min, Amalfi ~1h40. Buy tickets at the station bar or newsagent before boarding."]], "paris_cdg": [["Eiffel|RER", "Central Paris", "Free CDGVAL train to Terminal 2 or 3, then RER B into Paris, 35–50 min."]], "paris_ory": [["Eiffel|RER", "Central Paris", "Orlyval + RER B, or tram 7 + metro, ~45–60 min. Taxi has a fixed fare."]]};
+const TAXI={"rome": "FreeNow or itTaxi apps, or the rank outside Termini.", "florence": "itTaxi app, or the rank outside Santa Maria Novella. Florence taxis don't stop on the street.", "venice": "There are no road taxis in Venice. Water taxis exist but are very expensive.", "milan": "FreeNow or itTaxi apps, or the rank outside Centrale.", "sorrento": "Taxi rank in Piazza Tasso.", "paris_cdg": "G7 app, or the taxi rank at any terminal.", "paris_ory": "G7 app, or the taxi rank at any terminal."};
 
 function moveBlock(d){
   const k=OVERNIGHT(d), list=GETTING[k]; if(!list) return "";
@@ -688,16 +704,17 @@ function moveBlock(d){
   if(d.anniv){const o=annivOpt(ROUTES[current]);hits=list.filter(([re])=>new RegExp(re,"i").test(txt+" "+o.n+" "+o.d));}
   if(!hits.length) return "";
   const h=HOTEL[k];
-  return `<div class="blk"><span>Getting around</span><div class="callout" style="padding:12px 14px"><b>From ${h.name}:</b><ul>${hits.map(([,place,how])=>`<li><b>${place}:</b> ${how}</li>`).join("")}</ul><p class="small muted">🚕 ${TAXI[k]} · Plan any route live in <a href="https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(h.q)}&travelmode=transit" target="_blank" rel="noopener">Google Maps (transit)</a>.</p></div></div>`;
+  return `<details class="sub"><summary>🚆 How to get around today <span class="plus">+</span></summary><div class="callout" style="padding:12px 14px"><b>From ${h.name}:</b><ul>${hits.map(([,place,how])=>`<li><b>${place}:</b> ${how}</li>`).join("")}</ul><p class="small muted">🚕 <b>Only if you really need one:</b> ${TAXI[k]} · Plan any route live in <a href="https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(h.q)}&travelmode=transit" target="_blank" rel="noopener">Google Maps (transit)</a>.</p></div></details>`;
 }
+function nightsChips(r){return `<div class="nights">${r.nights.map(([k,n])=>`<span class="nchip ${HOTEL[k].city.startsWith(r.anniv)?"a":""}">🌙 ${n} night${n>1?"s":""} ${HOTEL[k].city.replace(" CDG","").replace(" Orly","")}</span>`).join("")}</div>`;}
 /* ---------- render ---------- */
 let current="B2";
 try{const s=localStorage.getItem("italy-route"); if(s&&ROUTES[s]) current=s;}catch(e){}
 
 function picker(){
   const g={A:["Fly into Italy the same day (5 Dec)","You land in Paris at 06:45 and fly on to Italy that afternoon."],B:["Sleep one night in Paris first","Rest at an airport hotel, fly to Italy on Sun 6 Dec."],C:["Everything on your list, nothing dropped","Amalfi, Rome, Florence, Pisa and Venice, all in. Busy, but complete."]};
-  document.getElementById("picker").innerHTML=Object.keys(g).map(k=>`<div class="group"><h3>Option ${k} · ${g[k][0]}</h3><p class="small muted">${g[k][1]}</p><div class="routes">${Object.keys(ROUTES).filter(id=>ROUTES[id].grp===k).map(id=>{const r=ROUTES[id],c=costs(id);return `<button class="route" data-id="${id}" aria-pressed="${id===current}"><span class="thumb" style="${bg(CITYIMG[r.anniv])}" aria-hidden="true"></span><span class="code">ROUTE ${id}${r.tag[1]?` · <span class="tag ${r.tag[0]||'cheap'}">${r.tag[1]}</span>`:""}</span><span class="name">${r.name}</span><span class="path">${r.path.join(" → ")}</span><span class="pp num">${lakh(c.pp)} <span class="small muted">/ person</span></span><span class="small muted">♥ 7 Dec in ${r.anniv}</span></button>`}).join("")}</div></div>`).join("");
-  document.querySelectorAll(".route").forEach(b=>b.addEventListener("click",()=>{current=b.dataset.id;try{localStorage.setItem("italy-route",current)}catch(e){};render();document.getElementById("s2").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}));
+  document.getElementById("picker").innerHTML=Object.keys(g).map(k=>`<div class="group"><h3>Option ${k} · ${g[k][0]}</h3><p class="small muted">${g[k][1]}</p><div class="routes">${Object.keys(ROUTES).filter(id=>ROUTES[id].grp===k).map(id=>{const r=ROUTES[id],c=costs(id);return `<button class="route" data-id="${id}" aria-pressed="${id===current}"><span class="thumb" style="${bg(CITYIMG[r.anniv])}" aria-hidden="true"></span><span class="code">ROUTE ${id}${r.tag[1]?` · <span class="tag ${r.tag[0]||'cheap'}">${r.tag[1]}</span>`:""}</span><span class="name">${r.name}</span>${nightsChips(r)}<span class="pp num">${lakh(c.pp)} <span class="small muted">/ person</span></span><span class="small muted">♥ 7 Dec in ${r.anniv}</span></button>`}).join("")}</div></div>`).join("");
+  document.querySelectorAll(".route").forEach(b=>b.addEventListener("click",()=>{current=b.dataset.id;try{localStorage.setItem("italy-route",current)}catch(e){};const rp=document.getElementById("routepick");if(rp)rp.open=false;render();showTab("trip");}));
 }
 
 function donut(parts,total){
@@ -707,6 +724,7 @@ function donut(parts,total){
 }
 
 function render(){
+  {const rc=document.getElementById("routechip"); if(rc) rc.textContent="🔁 Route "+current+" · change";}
   foodPicker();
   picker();
   const r=ROUTES[current],c=costs(current),f=FLIGHT[current];
@@ -718,10 +736,19 @@ function render(){
      <p class="lead">${r.blurb}</p>
      <div class="trail">${["Paris"].concat(r.path.filter(p=>p!=="Paris")).map((p,i,a)=>`<span class="stop ${p===r.anniv?'anniv':''}">${p===r.anniv?'♥ ':''}${p}${p==="Paris"&&r.grp==="A"?" (airport only)":""}</span>${i<a.length-1?'<span class="arrow">→</span>':''}`).join("")}</div>
      <div class="strip">${r.path.filter((p,i,a)=>a.indexOf(p)===i&&p!=="Paris").map(p=>`<div class="ph ${p===r.anniv?'anniv':''}" style="${bg(CITYIMG[p])}" role="img" aria-label="${p}"><span>${p===r.anniv?'♥ ':''}${p}</span></div>`).join("")}</div>
-     <p class="small muted">Nights: ${r.nights.map(([k,n])=>`${HOTEL[k].city} ${n}`).join(" · ")}</p>
+     ${nightsChips(r)}
      <p><a class="btnlink" href="${routeLink(current)}" target="_blank" rel="noopener">📍 Open this route in Google Maps</a></p>
+     <div class="facts"><a class="chip" href="#days" data-goto="days">📅 See the days</a><a class="chip" href="#hotels" data-goto="hotels">🏨 Hotels</a><a class="chip" href="#together" data-goto="together">✨ Things to do</a><a class="chip" href="#book" data-goto="book">✅ What to book</a></div>
    </div>
    <div class="mapbox">${routeMap(current)}<div class="mapkey"><span><i class="f"></i>flight</span><span><i></i>train</span><span>♥ anniversary</span></div></div></div>
+   <div class="budgetbar">
+     <div style="display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline"><span class="bignum num">${inr(c.pp)}</span><span class="muted">per person, land cost · eating: <b>${FOODMODES[FOODMODE].n}</b></span></div>
+     <div class="small">${over>0?`About <b>${inr(over)} over</b> the ₹1.5L target. Still well under the ₹2.5L max.`:`<b>${inr(-over)} under</b> the ₹1.5L target.`}</div>
+     <div class="bar" aria-hidden="true"><i class="${over>0?'over':''}" style="width:${c.pp/maxv*100}%"></i><u style="left:${target/maxv*100}%"></u></div>
+     <div class="small muted">Black line = ₹1.5L. Mumbai flights are extra.</div>
+   </div>
+   <details class="sub"><summary>💰 See where the money goes <span class="plus">+</span></summary>
+   <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
    <div class="money">${donut(c.parts,c.total)}
      <div class="legend">${c.parts.map(([n,v,col])=>`<div class="lg"><span class="sw" style="background:var(${col})"></span><span>${n}</span><span class="v">${inr(v)}</span></div>`).join("")}
        <div class="lg" style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><span></span><b>Land total for 2</b><span class="v">${inr(c.total)}</span></div>
@@ -730,15 +757,12 @@ function render(){
      </div>
    </div>
    ${FOODMODE!=="out"?`<div class="callout"><b>Eating "${FOODMODES[FOODMODE].n}" saves about ${inr(84000-FOODMODES[FOODMODE].v)} on this route.</b><p class="small">If you'd like to use it, a few ideas:</p><div class="extras">${EXTRAS.filter(e=>!e.only||r.path.includes(e.only)).map(e=>`<div class="extra"><span>${e.t}</span><b class="num">${e.p}</b></div>`).join("")}</div></div>`:""}
-   <div class="budgetbar">
-     <div class="small"><b>Per person vs the ₹1.5L target:</b> ${over>0?`about <b>${inr(over)} over</b>. Still well under the ₹2.5L max.`:`<b>${inr(-over)} under</b>.`}</div>
-     <div class="bar" aria-hidden="true"><i class="${over>0?'over':''}" style="width:${c.pp/maxv*100}%"></i><u style="left:${target/maxv*100}%"></u></div>
-     <div class="small muted">Black line = ₹1.5L. The ₹1L-per-person backup stays untouched.</div>
-   </div>
-   <div class="callout"><b>Paris → Italy flight</b><p>${f.t} · <span class="num">${inr(f.p)}</span> for 2. ${f.why} <a href="https://www.google.com/travel/flights" target="_blank" rel="noopener">Check on Google Flights</a></p></div>
-   ${over>0?`<div class="callout gold"><b>How to get down to ₹1.5L each</b><ul><li>Swap one or two hotels for the cheaper option in step 4 (saves ₹10–20k).</li><li>Make your anniversary a gondola or sunset plus a simpler dinner (saves ₹10–15k).</li><li>Lunch at vegetarian buffets and pizza-by-the-slice places (saves ₹5–10k).</li></ul></div>`:""}`;
 
-  document.getElementById("days").innerHTML=DAYS[current].map((d,i)=>`<details class="day ${d.anniv?'anniv':''}" ${d.anniv?'open':''}><summary><span class="dthumb" style="${bg(dayImg(d))}" aria-hidden="true"></span><span class="date"><span>${d.date[0]}</span><b>${d.date[1]}</b></span><span class="sumtxt"><span class="t">${d.title}</span><br><span class="c">${d.city}</span><br>${wxChip(d)}</span><span class="plus" aria-hidden="true">+</span></summary><div class="daybody"><div class="dayimg" style="${bg(dayImg(d))}" role="img" aria-label="${CAP[dayImg(d)]}"><span style="position:absolute;left:8px;bottom:8px;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px">${CAP[dayImg(d)]}</span></div>${d.go?`<div class="blk"><span>Getting there</span><div>${linkify(d.go,OVERNIGHT(d))}</div></div>`:""}${d.see?`<div class="blk"><span>Plan</span><ul>${d.see.map(s=>`<li>${linkify(s,OVERNIGHT(d))}</li>`).join("")}</ul></div>`:""}${moveBlock(d)}${foodBlock(d)}</div></details>`).join("");
+   <div class="callout"><b>Paris → Italy flight</b><p>${f.t} · <span class="num">${inr(f.p)}</span> for 2. ${f.why} <a href="https://www.google.com/travel/flights" target="_blank" rel="noopener">Check on Google Flights</a></p></div>
+   ${over>0?`<div class="callout gold"><b>How to get down to ₹1.5L each</b><ul><li>Swap one or two hotels for the "other option" on the Hotels tab (saves ₹10–20k).</li><li>Make your anniversary a gondola or sunset plus a simpler dinner (saves ₹10–15k).</li><li>Lunch at vegetarian buffets and pizza-by-the-slice places (saves ₹5–10k).</li></ul></div>`:""}</div></details>`;
+
+  document.getElementById("dayshead").innerHTML=`<p class="small"><b>Route ${current}: ${r.name}</b></p>${nightsChips(r)}`;
+  document.getElementById("days").innerHTML=DAYS[current].map((d,i)=>`<details class="day ${d.anniv?'anniv':''}"><summary><span class="dthumb" style="${bg(dayImg(d))}" aria-hidden="true"></span><span class="date"><span>${d.date[0]}</span><b>${d.date[1]}</b></span><span class="sumtxt"><span class="t">${d.title}</span><br><span class="c">${d.city}</span><br>${wxChip(d)}</span><span class="plus" aria-hidden="true">+</span></summary><div class="daybody">${d.title!=="Fly home"?`<p class="small">🏨 Tonight: <a href="#hotels" data-goto="hotels">${HOTEL[OVERNIGHT(d)].name}</a></p>`:""}<div class="dayimg" style="${bg(dayImg(d))}" role="img" aria-label="${CAP[dayImg(d)]}"><span style="position:absolute;left:8px;bottom:8px;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px">${CAP[dayImg(d)]}</span></div>${d.go?`<div class="blk"><span>Getting there</span><div>${linkify(d.go,OVERNIGHT(d))}</div></div>`:""}${d.see?`<div class="blk"><span>Plan</span><ul>${d.see.map(s=>`<li>${linkify(s,OVERNIGHT(d))}</li>`).join("")}</ul></div>`:""}${moveBlock(d)}${foodBlock(d)}</div></details>`).join("");
 
   document.getElementById("hotels").innerHTML=`<thead><tr><th>City</th><th>Hotel</th><th>Walk to transport</th><th>Lift &amp; heating</th><th>Breakfast</th><th class="r">Per night</th><th class="r">Nights</th><th>Other option</th></tr></thead><tbody>${r.nights.map(([k,n])=>{const h=HOTEL[k];return `<tr><td>${h.city}</td><td><a class="pick" href="${gh(h.name+" "+h.city)}" target="_blank" rel="noopener">${h.name}</a> <span class="small muted">· ${h.rating}★ guests</span><br><a class="small" href="${gm(h.q)}" target="_blank" rel="noopener">📍 Map</a></td><td class="small">${h.walk}</td><td class="small">✓ Lift<br>✓ Heating</td><td class="small">${h.bk?`Extra, about ${inr(h.bk)} a night for both (counted in the total)`:"Included"}</td><td class="r">${inr(h.n)}</td><td class="r">${n}</td><td class="small"><a href="${gm(h.altq)}" target="_blank" rel="noopener">${h.alt}</a></td></tr>`}).join("")}</tbody>`;
 
@@ -759,7 +783,20 @@ function render(){
 
 const FIMG={"Rome":"trevi","Florence":"florence","Venice":"venice","Milan":"milan","Sorrento & Amalfi":"amalfi"};
 document.getElementById("food").innerHTML=FOODS.map(f=>`<div class="card"><div class="ph" style="${bg(FIMG[f.c])};aspect-ratio:16/7" role="img" aria-label="${f.c}"></div><h4>${f.c}</h4><ul>${f.l.map(([n,d,q])=>`<li><a href="${gm(q)}" target="_blank" rel="noopener"><b>${n}</b></a>: ${d}</li>`).join("")}</ul></div>`).join("");
+
+const TABKEYS=["trip","days","hotels","food","together","transport","book","info"];
+function showTab(k,scroll){ if(!TABKEYS.includes(k)) k="trip";
+  TABKEYS.forEach(t=>{const el=document.getElementById("tab-"+t); if(el) el.hidden=(t!==k);});
+  document.querySelectorAll(".tabbtn").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===k?"true":"false"));
+  const act=document.querySelector(`.tabbtn[data-tab="${k}"]`); if(act&&act.scrollIntoView) act.scrollIntoView({block:"nearest",inline:"center"});
+  try{localStorage.setItem("italy-tab",k)}catch(e){}
+  if(scroll!==false) window.scrollTo({top:0});
+}
+document.querySelectorAll(".tabbtn[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("[data-goto]");if(a){e.preventDefault();showTab(a.dataset.goto);}});
+document.getElementById("routechip").addEventListener("click",()=>{showTab("trip");const rp=document.getElementById("routepick");if(rp){rp.open=true;rp.scrollIntoView({block:"start"});}});
 render();
+{let k=(location.hash||"").slice(1);if(!TABKEYS.includes(k)){try{k=localStorage.getItem("italy-tab")||"trip"}catch(e){k="trip"}}showTab(k,false);}
 </script>
 
 </body>
