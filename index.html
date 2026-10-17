@@ -181,15 +181,6 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .nchip{font-size:13px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--teal-soft);color:var(--ink)}
 .nchip.a{background:var(--gold-soft)}
 @media (max-width:520px){header .lead{font-size:15px}header h1{font-size:30px}}
-nav.tabs{position:fixed!important;left:0;right:0;bottom:0;top:auto!important;z-index:30;display:grid!important;grid-template-columns:repeat(5,1fr);gap:0!important;padding:0 0 env(safe-area-inset-bottom,0px)!important;margin:0!important;background:var(--surface)!important;border-top:1px solid var(--line);border-bottom:0!important;box-shadow:0 -4px 16px rgba(0,0,0,.08);overflow:visible!important}
-nav.tabs .tabbtn{all:unset;cursor:pointer;box-sizing:border-box;text-align:center;padding:18px 2px 16px;font-weight:700;font-size:16px;color:var(--muted);border-top:4px solid transparent}
-nav.tabs .tabbtn[aria-selected="true"]{color:var(--ink);border-top-color:var(--teal);background:var(--teal-soft)}
-nav.tabs .tabbtn:focus-visible{outline:3px solid var(--gold);outline-offset:-3px}
-#moremenu{position:absolute;right:8px;bottom:100%;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.18);display:flex;flex-direction:column;min-width:200px;overflow:hidden}
-#moremenu[hidden]{display:none}
-#moremenu .tabbtn{text-align:left;padding:16px 20px;border-top:0;border-bottom:1px solid var(--line);font-size:17px}
-#moremenu .tabbtn:last-child{border-bottom:0}
-body{padding-bottom:88px}
 .chgbtn{all:unset;cursor:pointer;padding:9px 16px;border:2px solid var(--teal);border-radius:999px;color:var(--teal);font-weight:700;font-size:15px}
 .dayimg{max-width:none!important;aspect-ratio:16/7!important}
 .daybody{gap:14px!important}
@@ -208,6 +199,12 @@ details.sub>summary{font-size:16px!important}
 footer details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
 footer summary{cursor:pointer;font-weight:700;font-size:15px;color:var(--ink)}
 footer details p{margin:10px 0 0}
+header h1{font-size:clamp(26px,6vw,32px)!important}
+header .lead{font-size:15px!important;color:var(--muted)}
+#routehead h2{font-size:clamp(21px,4.6vw,26px)!important}
+#routehead .lead{font-size:15px!important;color:var(--muted)}
+#routehead p[style*="font-weight:700"]{font-weight:400!important;font-size:15px}
+#routehead p[style*="font-weight:700"] span[style*="gold"]{font-weight:700}
 .route .thumb{aspect-ratio:3/1!important}
 .chgbtn{all:unset;cursor:pointer;padding:9px 16px;border:2px solid var(--teal);border-radius:999px;color:var(--teal);font-weight:700;font-size:15px}
 .chgbtn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
@@ -228,7 +225,7 @@ details.sub[open]>summary{margin-bottom:6px}
   <p class="lead">Ten nights in Italy, entering through Paris. Mon 7 Dec is your anniversary: no travel, just a lovely evening for the two of you. <span style="color:var(--gold)">♥</span></p>
 </header>
 
-<nav class="tabs" aria-label="Sections"><div id="moremenu" hidden><button class="tabbtn" data-tab="together" aria-selected="false">Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">To book</button><button class="tabbtn" data-tab="info" aria-selected="false">Good to know</button></div><button class="tabbtn" data-tab="trip" aria-selected="false">Trip</button><button class="tabbtn" data-tab="days" aria-selected="false">Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">Food</button><button class="tabbtn" id="morebtn" aria-expanded="false" aria-selected="false">More</button></nav>
+<nav class="tabs" aria-label="Sections"><button class="tabbtn" id="routechip" style="background:var(--gold-soft);border-color:var(--gold)">🔁 Route</button><button class="tabbtn" data-tab="trip" aria-selected="false">🗺️ Trip</button><button class="tabbtn" data-tab="days" aria-selected="false">📅 Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">🏨 Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">🍽️ Food</button><button class="tabbtn" data-tab="together" aria-selected="false">✨ Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">🚆 Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">✅ To book</button><button class="tabbtn" data-tab="info" aria-selected="false">ℹ️ Good to know</button></nav>
 <main>
 <section class="tab" id="tab-trip">
   <div id="routehead" style="display:flex;flex-direction:column;gap:6px"></div>
@@ -875,6 +872,7 @@ function donut(parts,total){
 
 function render(){
   {const nr=document.getElementById("nroutes"); if(nr) nr.textContent=Object.keys(ROUTES).length;}
+  {const rc=document.getElementById("routechip"); if(rc) rc.textContent="🔁 Route "+current+" · change";}
   foodPicker();
   picker();
   const r=ROUTES[current],c=costs(current),f=FLIGHT[current];
@@ -945,13 +943,12 @@ const TABKEYS=["trip","days","hotels","food","together","transport","book","info
 function showTab(k,scroll){ if(!TABKEYS.includes(k)) k="trip";
   TABKEYS.forEach(t=>{const el=document.getElementById("tab-"+t); if(el) el.hidden=(t!==k);});
   document.querySelectorAll(".tabbtn").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===k?"true":"false"));
-  {const mb=document.getElementById("morebtn"),mm=document.getElementById("moremenu"),inMore=["together","transport","book","info"].includes(k);if(mb)mb.setAttribute("aria-selected",inMore?"true":"false");if(mm){mm.hidden=true;} if(mb)mb.setAttribute("aria-expanded","false");}
+  const act=document.querySelector(`.tabbtn[data-tab="${k}"]`); if(act&&act.scrollIntoView&&scroll!==false) act.scrollIntoView({block:"nearest",inline:"center"});
   try{localStorage.setItem("italy-tab",k)}catch(e){}
   if(scroll!==false) window.scrollTo({top:0});
 }
 document.querySelectorAll(".tabbtn[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
-document.getElementById("morebtn").addEventListener("click",e=>{e.stopPropagation();const mm=document.getElementById("moremenu");mm.hidden=!mm.hidden;e.currentTarget.setAttribute("aria-expanded",mm.hidden?"false":"true");});
-document.addEventListener("click",e=>{const mm=document.getElementById("moremenu");if(mm&&!mm.hidden&&!e.target.closest("#moremenu")){mm.hidden=true;document.getElementById("morebtn").setAttribute("aria-expanded","false");}});
+document.getElementById("routechip").addEventListener("click",()=>{showTab("trip");const rp=document.getElementById("routepick");if(rp){rp.open=true;rp.scrollIntoView({block:"start"});}});
 document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("[data-goto]");if(a){e.preventDefault();showTab(a.dataset.goto);}});
 
 render();
