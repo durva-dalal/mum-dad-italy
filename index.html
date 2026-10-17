@@ -1070,6 +1070,20 @@ function flightGF(f){
   return gfLink([[day,o,d]],2);
 }
 function mumbaiGF(r){const h=r.homeFrom||"Milan";return gfLink([["2026-12-04","BOM","CDG"],["2026-12-15",h==="Rome"?"FCO":"MXP","BOM"]],3);}
+/* ---------- saved trips ---------- */
+function svGet(){try{return JSON.parse(localStorage.getItem("italy-saved")||"[]")}catch(e){return []}}
+function svSet(l){try{localStorage.setItem("italy-saved",JSON.stringify(l));return true}catch(e){return false}}
+const tripCode=a=>btoa(unescape(encodeURIComponent(JSON.stringify(a)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+function codeTrip(c){try{c=c.trim().replace(/-/g,"+").replace(/_/g,"/");while(c.length%4)c+="=";const a=JSON.parse(decodeURIComponent(escape(atob(c))));return a&&typeof a==="object"?a:null}catch(e){return null}}
+function openTrip(a){const r=buildRoute(a);if(!r.ok)return false;current="Q";render();showTab("trip");return true;}
+function savedHTML(){
+  const l=svGet();
+  return `<details class="ref" ${l.length?"open":""}><summary><span>💾 Saved trips${l.length?" · "+l.length:""}</span><span class="plus">+</span></summary><div class="inner">
+   ${l.length?l.map((t,i)=>`<div class="callout" style="gap:6px"><b>${t.name}</b><p class="small muted">${t.pp}</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="chgbtn" data-qopen="${i}">Open</button><button class="chgbtn" data-qdel="${i}" style="border-color:var(--line);color:var(--muted)">Delete</button></div></div>`).join(""):`<p class="small muted">Nothing saved yet. Finish the quiz and tap Save this trip.</p>`}
+   <p class="small"><b>Have a trip code?</b> Paste it here to open that trip on this phone.</p>
+   <input id="qcode" placeholder="Paste trip code" style="width:100%;padding:12px;font-size:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit"><div style="margin-top:8px"><button class="chgbtn" data-qcode>Open trip</button> <span class="small" id="qcodemsg" style="color:var(--warn)"></span></div>
+  </div></details>`;
+}
 /* ---------- quiz ---------- */
 const QZ={step:0,a:{}};
 const QS=[
@@ -1107,7 +1121,7 @@ function quiz(){
   const st=QZ.step;
   if(st<QS.length){
     const q=QS[st],cur=QZ.a[q.k];
-    el.innerHTML=`<p class="small muted">Question ${st+1} of ${QS.length}</p><div style="height:6px;border-radius:99px;background:var(--sunk)"><div style="height:6px;border-radius:99px;background:var(--teal);width:${(st/QS.length)*100}%"></div></div>
+    el.innerHTML=(st===0?savedHTML():"")+`<p class="small muted">Question ${st+1} of ${QS.length}</p><div style="height:6px;border-radius:99px;background:var(--sunk)"><div style="height:6px;border-radius:99px;background:var(--teal);width:${(st/QS.length)*100}%"></div></div>
      <h3>${q.t}</h3>${q.h?`<p class="small muted">${q.h}</p>`:""}
      <div class="seg">${q.o.map(([v,l,d])=>`<button data-q="${v}" aria-pressed="${q.multi?(cur||[]).includes(v):cur===v}"><b>${l||v}</b>${d?`<span class="small muted">${d}</span>`:""}</button>`).join("")}</div>
      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${st>0?`<button class="chgbtn" data-qback>Back</button>`:""}${q.multi?`<button class="chgbtn" data-qnext style="background:var(--teal);color:var(--surface)">Next</button>`:""}<button class="chgbtn" data-qskip style="border-color:var(--line);color:var(--muted)">Skip</button></div>`;
@@ -1120,6 +1134,7 @@ function quiz(){
     const custCard=(cust&&cust.ok)?`<div class="callout" style="gap:8px;border:2px solid var(--teal)"><span class="eyebrow">Built for you</span><b style="font-size:19px">${cust.route.name}</b><div class="stops">${stopsLine(cust.route)}</div><p class="small"><span class="num">${lakh(cc.pp)}</span> per person · ${cust.route.nights.length} hotels · fly home from ${cust.route.homeFrom}</p>${cust.notes.length?`<ul class="small">${cust.notes.map(n=>`<li>${n}</li>`).join("")}</ul>`:""}<p class="small">${FLIGHT.Q.t} · <span class="num">${inr(FLIGHT.Q.p)}</span> for 2</p><div><button class="chgbtn" data-qpick="Q">Show this route</button></div></div>`:"";
     el.innerHTML=`<h3>${exact?"Your best matches":"No ready-made route fits all of that, so I built one"}</h3><p class="small muted">Costs use your food choice on the Trip tab (${FOODMODES[FOODMODE].n}).</p>
      ${custCard}
+     ${custCard?`<div class="callout" style="gap:8px"><b>Keep this trip</b>${QZ.saved?`<p class="small">Saved ✓ It is in "Saved trips" at the start of this tab.</p>`:`<div><button class="chgbtn" data-qsave>💾 Save this trip</button></div>`}<p class="small muted">To open it on another phone or browser, send them this code and paste it under Saved trips.</p><input readonly id="qmycode" value="${tripCode(QZ.a)}" style="width:100%;padding:12px;font-size:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit"><div><button class="chgbtn" data-qcopy>Copy code</button> <span class="small" id="qcopymsg"></span></div></div>`:""}
      ${cards.map((x,i)=>{const r=ROUTES[x.id];return `<div class="callout" style="gap:8px;${i===0&&!custCard?"border:2px solid var(--teal)":""}"><span class="eyebrow">${custCard?"Closest ready-made":(i===0?"Best match":"Also good")} · Route ${x.id}${r.tag[1]?" · "+r.tag[1]:""}</span><b style="font-size:19px">${r.name}</b><div class="stops">${stopsLine(r)}</div><p class="small">${x.why.join(" · ")} · <span class="num">${lakh(x.pp)}</span> per person</p>${x.miss.length?`<p class="small" style="color:var(--warn)">Missing: ${x.miss.join(", ")}</p>`:""}<div><button class="chgbtn" data-qpick="${x.id}">Show this route</button></div></div>`}).join("")}
      <details class="ref"><summary><span>✈️ All flight options</span><span class="plus">+</span></summary><div class="inner">${flightOptionsHTML()}</div></details>
      <div><button class="chgbtn" data-qagain style="border-color:var(--line);color:var(--muted)">Start again</button></div>`;
@@ -1131,7 +1146,12 @@ document.addEventListener("click",e=>{
   if(o&&q){const v=o.dataset.q; if(q.multi){const a=QZ.a[q.k]||[];QZ.a[q.k]=a.includes(v)?a.filter(x=>x!==v):a.concat(v);} else {QZ.a[q.k]=v;QZ.step++;} quiz();return;}
   if(e.target.closest("[data-qnext]")||e.target.closest("[data-qskip]")){QZ.step++;quiz();return;}
   if(e.target.closest("[data-qback]")){QZ.step=Math.max(0,QZ.step-1);quiz();return;}
-  if(e.target.closest("[data-qagain]")){QZ.step=0;QZ.a={};quiz();return;}
+  if(e.target.closest("[data-qagain]")){QZ.step=0;QZ.a={};QZ.saved=false;quiz();return;}
+  if(e.target.closest("[data-qsave]")){const l=svGet(),r=buildRoute(QZ.a);if(r.ok){const c=costs("Q");l.push({name:r.route.name,pp:lakh(c.pp)+" per person · fly home from "+r.route.homeFrom,a:JSON.parse(JSON.stringify(QZ.a))});svSet(l);QZ.saved=true;quiz();}return;}
+  const op=e.target.closest("[data-qopen]");if(op){const t=svGet()[+op.dataset.qopen];if(t)openTrip(t.a);return;}
+  const dl=e.target.closest("[data-qdel]");if(dl){const l=svGet();l.splice(+dl.dataset.qdel,1);svSet(l);quiz();return;}
+  if(e.target.closest("[data-qcode]")){const a=codeTrip(document.getElementById("qcode").value);if(!a||!openTrip(a))document.getElementById("qcodemsg").textContent="That code did not work.";return;}
+  if(e.target.closest("[data-qcopy]")){const i=document.getElementById("qmycode");i.select();let ok=false;try{ok=document.execCommand("copy")}catch(_){}try{navigator.clipboard&&navigator.clipboard.writeText(i.value);ok=true}catch(_){}document.getElementById("qcopymsg").textContent=ok?"Copied ✓":"Press and hold the code to copy it.";return;}
   const p=e.target.closest("[data-qpick]"); if(p){current=p.dataset.qpick;try{localStorage.setItem("italy-route",current==="Q"?"B2":current)}catch(_){};render();showTab("trip");}
 });
 /* ---------- render ---------- */
