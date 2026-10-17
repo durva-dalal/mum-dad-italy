@@ -944,7 +944,7 @@ function render(){
   picker();
   quiz();
   const r=ROUTES[current],c=costs(current),f=FLIGHT[current];
-  const target=150000, over=c.pp-target, maxv=Math.max(c.pp,target)*1.08;
+  const target=150000, over=c.pp-target, maxv=250000;
   document.getElementById("routehead").innerHTML=`
      <span class="eyebrow">Your route · Route ${current}${r.tag[1]?" · "+r.tag[1]:""}</span>
      <h2 style="font-size:clamp(26px,5vw,34px)">${r.name}</h2>
@@ -957,8 +957,8 @@ function render(){
    <div class="budgetbar">
      <div style="display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline"><span class="bignum num">${inr(c.pp)}</span><span class="muted">per person, land cost · eating: <b>${FOODMODES[FOODMODE].n}</b></span></div>
      <div class="small">${over>0?`About <b>${inr(over)} over</b> the ₹1.5L target. Still well under the ₹2.5L max.`:`<b>${inr(-over)} under</b> the ₹1.5L target.`}</div>
-     <div class="bar" aria-hidden="true"><i class="${over>0?'over':''}" style="width:${c.pp/maxv*100}%"></i><u style="left:${target/maxv*100}%"></u></div>
-     <div class="small muted">Black line = ₹1.5L. Mumbai flights are extra.</div>
+     <div class="bar" aria-hidden="true"><i class="${over>0?'over':''}" style="width:${Math.min(100,c.pp/maxv*100)}%"></i><u style="left:${target/maxv*100}%"></u></div>
+     <div class="small muted">The bar runs from ₹0 to ₹2.5L, the most you want to spend. The black line is your ₹1.5L target. Mumbai flights are extra.</div>
    </div>
    <div class="money">${donut(c.parts,c.total)}
      <div class="legend">${c.parts.map(([n,v,col])=>`<div class="lg"><span class="sw" style="background:var(${col})"></span><span>${n}</span><span class="v">${inr(v)}</span></div>`).join("")}
