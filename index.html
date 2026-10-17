@@ -205,6 +205,11 @@ header .lead{font-size:15px!important;color:var(--muted)}
 #routehead .lead{font-size:15px!important;color:var(--muted)}
 #routehead p[style*="font-weight:700"]{font-weight:400!important;font-size:15px}
 #routehead p[style*="font-weight:700"] span[style*="gold"]{font-weight:700}
+.stops{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-size:15px;line-height:1.4}
+.stops .st{white-space:nowrap;color:var(--ink)}
+.stops .st i{font-style:normal;font-weight:400;color:var(--muted);margin-left:3px;font-variant-numeric:tabular-nums}
+.stops .st.an{color:var(--gold);font-weight:700}
+.stops .arr{color:var(--muted)}
 .route .thumb{aspect-ratio:3/1!important}
 .chgbtn{all:unset;cursor:pointer;padding:9px 16px;border:2px solid var(--teal);border-radius:999px;color:var(--teal);font-weight:700;font-size:15px}
 .chgbtn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
@@ -855,8 +860,8 @@ function moveBlock(d){
 }
 function stopsLine(r){const seq=["Paris"].concat(r.path.filter(p=>p!=="Paris"));
   const nn=c=>r.nights.filter(([k])=>HOTEL[k].city.indexOf(c)===0).reduce((t,[,n])=>t+n,0);
-  return seq.map(p=>{const n=nn(p);const sub=n?` <span class="muted small" style="font-weight:400">${n}N</span>`:(p==="Paris"?` <span class="muted small" style="font-weight:400">airport only</span>`:(p==="Pisa"?` <span class="muted small" style="font-weight:400">day trip</span>`:""));
-    return (p===r.anniv?`<span style="color:var(--gold)">♥ ${p}</span>`:p)+sub;}).join(' <span class="muted">→</span> ')+' <span class="muted small" style="font-weight:400">(N = nights)</span>';}
+  return seq.map(p=>{const n=nn(p);const sub=n?`${n}N`:(p==="Paris"?"airport":(p==="Pisa"?"day trip":""));
+    const an=p===r.anniv;return `<span class="st${an?" an":""}">${an?"♥ ":""}${p}${sub?` <i>${sub}</i>`:""}</span>`;}).join('<span class="arr" aria-hidden="true">→</span>');}
 function nightsChips(r){return `<p class="small muted nights">${r.nights.map(([k,n])=>`${n}N ${HOTEL[k].city.replace(" CDG","").replace(" Orly","")}`).join(" · ")}</p>`;}
 
 /* ---------- quiz ---------- */
@@ -867,7 +872,7 @@ const QS=[
  {k:"pace",t:"How busy should the trip feel?",o:[["slow","Slow","Fewest hotel changes (3–4)"],["mid","Balanced","About 4–5 hotels"],["all","See it all","5 or more hotels, longer days"]]},
  {k:"days",t:"What kind of days do you like?",multi:true,o:[["sights","Big sights and museums"],["slow","Slow walks and views"],["hands","Hands-on things: workshops, classes"]],h:"Pick any, then tap Next."},
  {k:"home",t:"Where do you want to fly home from?",o:[["Milan","Milan"],["Rome","Rome"],["any","Either is fine"]]},
- {k:"anniv",t:"Where should your anniversary (Mon 7 Dec) be?",o:[["Venice","Venice"],["Rome","Rome"],["Florence","Florence"],["Milan","Milan"],["Sorrento","Sorrento (by the sea)"],["any","Surprise me"]]},
+ {k:"anniv",t:"Where should your anniversary be?",o:[["Venice","Venice"],["Rome","Rome"],["Florence","Florence"],["Milan","Milan"],["Sorrento","Sorrento (by the sea)"],["any","Surprise me"]]},
  {k:"budget",t:"Budget per person for land costs?",o:[["150000","About ₹1.5L","Cheaper routes first"],["180000","Up to ₹1.8L"],["250000","Up to ₹2.5L","Cost is not a worry"]]}
 ];
 const nightsIn=(r,c)=>r.nights.filter(([k])=>HOTEL[k].city.indexOf(c)===0).reduce((t,[,n])=>t+n,0);
@@ -902,7 +907,7 @@ function quiz(){
     const res=Object.keys(ROUTES).map(qzScore).sort((x,y)=>y.s-x.s).slice(0,3);
     const none=res[0].miss.length>0;
     el.innerHTML=`<h3>Your best matches</h3><p class="small muted">${none?"No route has everything you picked, so these are the closest. ":""}Costs use your food choice on the Trip tab (${FOODMODES[FOODMODE].n}).</p>
-     ${res.map((x,i)=>{const r=ROUTES[x.id];return `<div class="callout" style="gap:8px;${i===0?"border:2px solid var(--teal)":""}"><span class="eyebrow">${i===0?"Best match":"Also good"} · Route ${x.id}${r.tag[1]?" · "+r.tag[1]:""}</span><b style="font-size:19px">${r.name}</b><p style="font-weight:400;font-size:15px">${stopsLine(r)}</p><p class="small">${x.why.join(" · ")} · <span class="num">${lakh(x.pp)}</span> per person</p>${x.miss.length?`<p class="small" style="color:var(--warn)">Missing: ${x.miss.join(", ")}</p>`:""}<div><button class="chgbtn" data-qpick="${x.id}">Show this route</button></div></div>`}).join("")}
+     ${res.map((x,i)=>{const r=ROUTES[x.id];return `<div class="callout" style="gap:8px;${i===0?"border:2px solid var(--teal)":""}"><span class="eyebrow">${i===0?"Best match":"Also good"} · Route ${x.id}${r.tag[1]?" · "+r.tag[1]:""}</span><b style="font-size:19px">${r.name}</b><div class="stops">${stopsLine(r)}</div><p class="small">${x.why.join(" · ")} · <span class="num">${lakh(x.pp)}</span> per person</p>${x.miss.length?`<p class="small" style="color:var(--warn)">Missing: ${x.miss.join(", ")}</p>`:""}<div><button class="chgbtn" data-qpick="${x.id}">Show this route</button></div></div>`}).join("")}
      <div><button class="chgbtn" data-qagain style="border-color:var(--line);color:var(--muted)">Start again</button></div>`;
   }
 }
@@ -944,7 +949,7 @@ function render(){
      <span class="eyebrow">Your route · Route ${current}${r.tag[1]?" · "+r.tag[1]:""}</span>
      <h2 style="font-size:clamp(26px,5vw,34px)">${r.name}</h2>
      <p class="lead">${r.blurb}</p>
-     <p style="font-weight:700;line-height:1.5">${stopsLine(r)}</p>
+     <div class="stops">${stopsLine(r)}</div>
      <p><button class="chgbtn" id="chg">Change route</button></p>`;
   {const c=document.getElementById("chg"); if(c&&c.addEventListener) c.addEventListener("click",e=>{e.preventDefault();const rp=document.getElementById("routepick");if(rp){rp.open=true;rp.scrollIntoView({block:"start"});}});}
   document.getElementById("summary").innerHTML=`
