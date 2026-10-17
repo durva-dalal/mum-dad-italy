@@ -241,7 +241,7 @@ details.sub[open]>summary{margin-bottom:6px}
 </section>
 <section class="tab" id="tab-quiz" hidden>
   <h2>Find my route</h2>
-  <p class="muted">Seven quick questions. Then you get your best-matching routes.</p>
+  <p class="muted">Eight quick questions. Then you get your best-matching routes.</p>
   <div class="panel" id="quizbody"></div>
 </section>
 <section class="tab" id="tab-days" hidden>
@@ -966,8 +966,10 @@ function buildRoute(a){
   let ai=seq.indexOf(anniv);
   if(ai===1&&seq[0]==="Rome"){seq=[anniv].concat(seq.filter(c=>c!==anniv));ai=0;notes.push("Rome needs at least 2 nights, so your anniversary city comes first. That means one longer train ride.");}
   else if(ai>1){seq=[anniv].concat(seq.filter(c=>c!==anniv));ai=0;notes.push(`Your anniversary is on Mon 7 Dec, so ${anniv} has to come first. That means one longer train ride.`);}
+  const wantRest=a.day1==="rest"||((!a.day1||a.day1==="any")&&a.pace==="slow");
+  if(wantRest&&ai===1){seq=[anniv].concat(seq.filter(c=>c!==anniv));ai=0;notes.push("Resting in Paris first means your anniversary city comes first, so one train ride is longer.");}
   const pre=ai===1;
-  const rest=(a.pace==="slow")&&ai===0;
+  const rest=wantRest&&ai===0;
   const total=10-(rest?1:0);
   const last=seq[seq.length-1];
   // minimum nights
@@ -1074,6 +1076,7 @@ const QS=[
  {k:"places",t:"Which places must be in your trip?",multi:true,o:[["Rome","Rome"],["Florence","Florence"],["Venice","Venice"],["Pisa","Pisa (Leaning Tower)"],["Sorrento","Amalfi Coast (Sorrento)"],["Milan","Milan"]],h:"Pick all you like, then tap Next."},
  {k:"most",t:"Where would you like the most time?",o:[["Rome","Rome"],["Florence","Florence"],["Venice","Venice"],["Sorrento","Amalfi Coast"],["Milan","Milan"],["equal","Equal time everywhere"]]},
  {k:"pace",t:"How busy should the trip feel?",o:[["slow","Slow","Fewest hotel changes (3–4)"],["mid","Balanced","About 4–5 hotels"],["all","See it all","5 or more hotels, longer days"]]},
+ {k:"day1",t:"On your first day, after the overnight flight, what do you prefer?",o:[["rest","Rest in Paris first","Sleep at an airport hotel, fly on Sun 6 Dec"],["fly","Fly on the same day","Land at 06:45, fly to Italy that afternoon"],["any","Either is fine"]]},
  {k:"days",t:"What kind of days do you like?",multi:true,o:[["sights","Big sights and museums"],["slow","Slow walks and views"],["hands","Hands-on things: workshops, classes"]],h:"Pick any, then tap Next."},
  {k:"home",t:"Where do you want to fly home from?",o:[["Milan","Milan"],["Rome","Rome"],["any","Either is fine"]]},
  {k:"anniv",t:"Where should your anniversary be?",o:[["Venice","Venice"],["Rome","Rome"],["Florence","Florence"],["Milan","Milan"],["Sorrento","Sorrento (by the sea)"],["any","Surprise me"]]},
@@ -1085,6 +1088,7 @@ function qzScore(id){
   let s=0;const why=[],miss=[];
   pl.forEach(p=>{const has=p==="Pisa"?(r.legs.includes("pisa")||r.path.includes("Pisa")):N(p)>0; if(!has){s-=100;miss.push(p==="Sorrento"?"Amalfi":p);}});
   const vis=["Rome","Florence","Venice","Milan","Sorrento"].filter(c=>N(c)>0),ns=vis.map(N);
+  if(a.day1&&a.day1!=="any"){const hp=r.nights.some(x=>x[0].indexOf("paris")===0);if((a.day1==="rest")!==hp)s-=50;else why.unshift(hp?"Rest night in Paris":"Fly on the same day");}
   if(a.most&&a.most!=="equal"){s+=N(a.most)*6;if(N(a.most)===Math.max(...ns)&&N(a.most)>0)why.push(`Most time in ${a.most==="Sorrento"?"Amalfi":a.most} (${N(a.most)}N)`);}
   if(a.most==="equal"){s-=(Math.max(...ns)-Math.min(...ns))*4;}
   if(a.pace==="slow")s-=Math.max(0,h-4)*15; if(a.pace==="mid")s-=Math.abs(h-5)*8; if(a.pace==="all")s+=h*6;
@@ -1109,7 +1113,7 @@ function quiz(){
      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${st>0?`<button class="chgbtn" data-qback>Back</button>`:""}${q.multi?`<button class="chgbtn" data-qnext style="background:var(--teal);color:var(--surface)">Next</button>`:""}<button class="chgbtn" data-qskip style="border-color:var(--line);color:var(--muted)">Skip</button></div>`;
   } else {
     const res=Object.keys(ROUTES).filter(k=>k!=="Q").map(qzScore).sort((x,y)=>y.s-x.s).slice(0,3);
-    const exact=res[0].miss.length===0&&res[0].s>-30&&(!QZ.a.home||QZ.a.home==="any"||(ROUTES[res[0].id].homeFrom||"Milan")===QZ.a.home)&&(!QZ.a.anniv||QZ.a.anniv==="any"||ROUTES[res[0].id].anniv===QZ.a.anniv)&&(!QZ.a.most||QZ.a.most==="equal"||nightsIn(ROUTES[res[0].id],QZ.a.most)===Math.max(...["Rome","Florence","Venice","Milan","Sorrento"].map(c=>nightsIn(ROUTES[res[0].id],c))));
+    const exact=res[0].miss.length===0&&res[0].s>-30&&(!QZ.a.day1||QZ.a.day1==="any"||(QZ.a.day1==="rest")===ROUTES[res[0].id].nights.some(x=>x[0].indexOf("paris")===0))&&(!QZ.a.home||QZ.a.home==="any"||(ROUTES[res[0].id].homeFrom||"Milan")===QZ.a.home)&&(!QZ.a.anniv||QZ.a.anniv==="any"||ROUTES[res[0].id].anniv===QZ.a.anniv)&&(!QZ.a.most||QZ.a.most==="equal"||nightsIn(ROUTES[res[0].id],QZ.a.most)===Math.max(...["Rome","Florence","Venice","Milan","Sorrento"].map(c=>nightsIn(ROUTES[res[0].id],c))));
     let cust=null;if(!exact){try{cust=buildRoute(QZ.a);}catch(err){cust=null;}}
     const cards=(cust&&cust.ok)?res.slice(0,2):res;
     const cc=(cust&&cust.ok)?costs("Q"):null;
