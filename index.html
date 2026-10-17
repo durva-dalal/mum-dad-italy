@@ -946,7 +946,7 @@ function render(){
   const r=ROUTES[current],c=costs(current),f=FLIGHT[current];
   const target=150000, over=c.pp-target, maxv=250000;
   document.getElementById("routehead").innerHTML=`
-     <span class="eyebrow">Your route · Route ${current}${r.tag[1]?" · "+r.tag[1]:""}</span>
+     ${r.tag[1]?`<span class="eyebrow">${r.tag[1]}</span>`:""}
      <h2 style="font-size:clamp(26px,5vw,34px)">${r.name}</h2>
      <p class="lead">${r.blurb}</p>
      <div class="stops">${stopsLine(r)}</div>
