@@ -351,7 +351,7 @@ details.sub[open]>summary{margin-bottom:6px}
 
 <footer>
   <details><summary>About these numbers</summary>
-  <p>Money is in rupees for 2 people, using €1 = ₹112 and £1 = ₹128 (today's rate plus about 3% card fees). Food is budgeted at ₹8,400 a day for both if you eat out every meal. Use "How do you like to eat?" on the Trip tab to lower it. Flights were checked on Google Flights on 16–17 Oct 2026 and prices move daily.</p>
+  <p>Money is in rupees for 2 people, using €1 = ₹112 and £1 = ₹128 (today's rate plus about 3% card fees). Food is budgeted at ₹8,400 a day for both if you eat out every meal. Use "How do you like to eat?" on the Trip tab to lower it. The food line leaves out the normal dinner on 7 Dec, because the anniversary dinner replaces it. Flights were checked on Google Flights on 16–17 Oct 2026 and prices move daily.</p>
   <p>Flights to and from Mumbai (₹1,40,906–1,46,740 for 2, depending on whether you fly home from Rome or Milan) are not in the land total. Add them on top.</p>
   <p>Prices are what Google Hotels showed on 16 Oct 2026 for the exact nights of Route B2 (Paris 5 Dec, Venice 6–9, Florence 9–12, Rome 12–14, Milan 14–15, Sorrento 6–8), per room per night for 2, before city tax. Other routes use the same hotels on slightly different nights, so expect small differences. They change daily, so re-check before booking. Every hotel here has a lift and heating, and is 2–6 minutes on foot from a main station or bus stop, so getting around is easy. The other-option hotels weren't all checked for a lift, so check before booking one.</p>
   <p>Hotel amenities (lift, heating, free Wi-Fi, 24h desk) come from the hotels' own listings, checked 17 Oct 2026. Abbreviations: Bkfst = breakfast, incl. = included.</p>
@@ -497,7 +497,7 @@ function costs(id){
   const tr=r.legs.reduce((s,l)=>s+LEG[l][1]*EUR,0);
   const loc=r.local.reduce((s,l)=>s+LOCAL[l][1]*EUR,0);
   const si=r.sight.reduce((s,l)=>s+SIGHT[l],0);
-  const parts=[["Hotels (incl. breakfast)",hotels,"--c1"],[`Food (${FOODMODES[FOODMODE].per}/day for 2)`,FOODMODES[FOODMODE].v,"--c2"],["Anniversary evening",annivOpt(r).c,"--c3"],["Paris → Italy flight + 2 bags",fl,"--c4"],["Trains & airport transfers",tr,"--c5"],["Sightseeing & tours",si,"--c6"],["Local buses & boats",loc,"--c7"],["City tax",tax,"--c8"]];
+  const parts=[["Hotels (incl. breakfast)",hotels,"--c1"],[`Food (${FOODMODES[FOODMODE].per}/day for 2)`,FOODMODES[FOODMODE].v*0.95,"--c2"],["Anniversary evening",annivOpt(r).c,"--c3"],["Paris → Italy flight + 2 bags",fl,"--c4"],["Trains & airport transfers",tr,"--c5"],["Sightseeing & tours",si,"--c6"],["Local buses & boats",loc,"--c7"],["City tax",tax,"--c8"]];
   const total=parts.reduce((s,p)=>s+p[1],0);
   return {parts,total,pp:total/2};
 }
@@ -999,7 +999,7 @@ function render(){
        <div class="lg"><span></span><span class="muted">+ Mumbai flights (per person)</span><span class="v muted">${inr(longFor(r).p/2)}</span></div>
      </div>
    </div>
-   ${FOODMODE!=="out"?`<div class="callout"><b>Eating "${FOODMODES[FOODMODE].n}" saves about ${inr(84000-FOODMODES[FOODMODE].v)} on this route.</b><p class="small">If you'd like to use it, a few ideas:</p><div class="extras">${EXTRAS.filter(e=>!e.only||r.path.includes(e.only)).map(e=>`<div class="extra"><span>${e.t}</span><b class="num">${e.p}</b></div>`).join("")}</div></div>`:""}
+   ${FOODMODE!=="out"?`<div class="callout"><b>Eating "${FOODMODES[FOODMODE].n}" saves about ${inr((84000-FOODMODES[FOODMODE].v)*0.95)} on this route.</b><p class="small">If you'd like to use it, a few ideas:</p><div class="extras">${EXTRAS.filter(e=>!e.only||r.path.includes(e.only)).map(e=>`<div class="extra"><span>${e.t}</span><b class="num">${e.p}</b></div>`).join("")}</div></div>`:""}
 
    <div class="callout"><b>Flights to and from Mumbai</b><p>${longFor(r).air}</p><p>${longFor(r).out}</p><p>${longFor(r).back}</p><p><b class="num">${inr(longFor(r).p)}</b> for 2 <span class="muted small">(Google Flights, 17 Oct)</span></p></div>
    <div class="callout"><b>Paris → Italy flight</b><p>${f.t}</p><p><b class="num">${inr(f.p)}</b> for 2. ${f.why}</p><a href="https://www.google.com/travel/flights" target="_blank" rel="noopener">Check on Google Flights</a></div>
