@@ -384,7 +384,7 @@ const LEG={
   nap:["Naples airport → Sorrento, Curreri bus",20], cdg_ory:["CDG → Orly by RER B + Orlyval",50],
   rf:["Rome ↔ Florence fast train",50], fv:["Florence ↔ Venice fast train",60], vm:["Venice → Milan fast train",50],
   rm:["Rome → Milan fast train",70], fm:["Florence → Milan fast train",50], pisa:["Florence ↔ Pisa return, regional",36],
-  mxp:["Milan → Malpensa Express",30], fco_out:["Termini → Rome airport, Leonardo Express",28], flo_sor:["Florence → Naples fast train + Circumvesuviana to Sorrento",80], sor_rome:["Sorrento → Naples → Rome trains",59]
+  mxp:["Milan → Malpensa Express",30], fco_out:["Termini → Rome airport, Leonardo Express",28], flo_sor:["Florence → Naples fast train + Circumvesuviana to Sorrento",80], sor_rome:["Sorrento → Naples → Rome trains",59], vr:["Venice → Rome fast train",110]
 };
 const LOCAL={rome3:["Rome 72h pass ×2",44],rome2:["Rome 48h pass ×2",30],ven3:["Venice 3-day ACTV ×2",90],ven2:["Venice 2-day ACTV ×2",70],flo:["Florence buses",9],mil:["Milan 24h ×2",15.2],sor:["Sorrento local trains/buses",27],rome4:["Rome 72h + 24h pass ×2",61]};
 const SIGHT={rome3:16000,rome2:12000,flo:10000,ven:8000,mil:3000,sor:6000};
@@ -406,6 +406,8 @@ const FLIGHT={
 
  E1:{t:"Air France · Sat 5 Dec · CDG 13:20 → Venice VCE 15:00",p:21584,why:"Same airport you land at. A few hours' wait after landing at 06:45."},
  E2:{t:"Air France · Sat 5 Dec · CDG 12:25 → Milan Linate 13:55",p:19454,why:"Linate is on the metro, 15 min to the centre."},
+ E3:{t:"easyJet · Sat 5 Dec · Paris Orly 11:50 → Naples 14:00",p:9408,why:"Needs a 1h15 train ride from CDG to Orly first (RER B + Orlyval). Air France from CDG is ₹42,040."},
+ E4:{t:"easyJet · Sun 6 Dec · Paris Orly 09:35 → Naples 11:45",p:9088,why:"Stay near Orly the night before. Air France from CDG is ₹36,926+."},
  B4:{t:"easyJet · Sun 6 Dec · Paris Orly 09:35 → Naples 11:45",p:9088,why:"Stay near Orly the night before. Air France from CDG is ₹36,926+."}
 };
 
@@ -439,6 +441,10 @@ const ROUTES={
    blurb:"One night in Venice after landing, four calm nights in Florence (your anniversary, Pisa, and Siena if you like), then five nights in Rome with a quiet day trip to Orvieto. Only three hotels."},
  E2:{grp:"E",homeFrom:"Rome",sameDay:true,name:"Milan anniversary, then Venice, Florence, Rome",path:["Milan","Venice","Florence","Rome"],anniv:"Milan",tag:["",""],nights:[["milan",3],["venice",2],["florence",2],["rome",3]],legs:["lin","vm","fv","pisa","rf","fco_out"],local:["mil","ven2","flo","rome3"],sight:["mil","ven","flo","rome3"],annivCost:5600,
    blurb:"Three easy nights in Milan with your anniversary there, then a straight line south: Venice 2 nights, Florence 2 (with Pisa), Rome 3. You fly home from Rome."},
+ E3:{grp:"E",homeFrom:"Rome",name:"Amalfi anniversary, then Florence, Venice, Rome",path:["Sorrento","Florence","Pisa","Venice","Rome"],anniv:"Sorrento",tag:["",""],nights:[["sorrento",3],["florence",3],["venice",2],["rome",2]],legs:["cdg_ory","nap","flo_sor","pisa","fv","vr","fco_out"],local:["sor","flo","ven2","rome2"],sight:["sor","flo","ven","rome2"],annivCost:11200,
+   blurb:"Fly on to Naples the day you land and spend three nights by the sea, with your anniversary in Sorrento. Then Florence (with Pisa), Venice and a last two nights in Rome. No Milan."},
+ E4:{grp:"E",homeFrom:"Rome",name:"Rest in Paris, Amalfi anniversary, Florence, Venice, Rome",path:["Paris","Sorrento","Florence","Pisa","Venice","Rome"],anniv:"Sorrento",tag:["",""],nights:[["paris_ory",1],["sorrento",2],["florence",3],["venice",2],["rome",2]],legs:["cdg_ory","nap","flo_sor","pisa","fv","vr","fco_out"],local:["sor","flo","ven2","rome2"],sight:["sor","flo","ven","rome2"],annivCost:11200,
+   blurb:"A rest night near Orly first, then two nights in Sorrento with your anniversary there. Then Florence (with Pisa), Venice and Rome. No Milan."},
  B4:{grp:"B",name:"Paris, then Amalfi (no Venice)",path:["Paris","Sorrento","Rome","Florence","Milan"],anniv:"Sorrento",tag:["cheap","Cheapest"],nights:[["paris_ory",1],["sorrento",3],["rome",2],["florence",3],["milan",1]],legs:["cdg_ory","nap","sor_rome","rf","pisa","fm","mxp"],local:["sor","rome2","flo","mil"],sight:["sor","rome2","flo","mil"],annivCost:25000,
    blurb:"Swaps Venice for the Amalfi Coast. Your anniversary by the sea in Sorrento. Calm pace, Pisa included."}
 };
@@ -556,6 +562,32 @@ const DAYS={
   D(["Sat","12"],"Florence → Rome","Train to Rome, Vatican afternoon",Object.assign(rome.arrive("Morning fast train Florence → Rome Termini, 1h35."),{see:["Drop bags at UNA Hotels Decò.","15:00 timed entry: Vatican Museums + Sistine Chapel (closed tomorrow, Sunday).","Evening: Trevi Fountain."]})),
   D(["Sun","13"],"Rome","Ancient Rome",rome.ancient),
   D(["Mon","14"],"Rome","Slow last day",{see:["Late start. Trevi Fountain, Pantheon, Piazza Navona Christmas market.","Afternoon: rest and pack.","Big Bus hop-on hop-off if you want to see more without walking."],eat:"Dinner: Rifugio Romano (vegan Roman classics)."}),
+  D(["Tue","15"],"Rome → Mumbai","Fly home",ROMEFLY)
+ ],
+ E3:[
+  D(["Sat","5"],"Paris → Sorrento","Land in Paris, fly to Naples",sor.arrive(ARRIVE_PARIS+" RER B train from CDG to Antony, then the Orlyval shuttle train to Orly, about 1h15 on one combined ticket. easyJet Orly 11:50 → Naples 14:00. Curreri bus to Sorrento, about 1 hour.")),
+  D(["Sun","6"],"Sorrento","Amalfi Coast drive",sor.amalfi),
+  D(["Mon","7"],"Sorrento","♥ Anniversary by the sea",Object.assign({anniv:true},sor.anniv)),
+  D(["Tue","8"],"Sorrento → Florence","Train to Florence",flo.arrive("Circumvesuviana train Sorrento → Naples (about 1h10), then fast train Naples → Florence SMN, about 3 hours. Holiday today, book early.")),
+  D(["Wed","9"],"Florence","Half-day to Pisa",flo.pisa),
+  D(["Thu","10"],"Florence","Uffizi and the city",flo.uffizi),
+  D(["Fri","11"],"Florence → Venice","Train to Venice",ven.arrive("Morning fast train Florence → Venice, about 2h10. Step out of the station straight onto the Grand Canal.")),
+  D(["Sat","12"],"Venice","St Mark's, Rialto and Murano",Object.assign({},ven.marks,{see:ven.marks.see.concat(["If you have energy: a vaporetto to Murano for a glass-blowing demo."])})),
+  D(["Sun","13"],"Venice → Rome","Train to Rome, Colosseum",Object.assign(rome.arrive("Morning fast train Venice → Rome Termini, about 3h45 (leave by 09:00)."),{see:["Check in at UNA Hotels Decò, 2 minutes from Termini.","Afternoon: Colosseum + Forum guided tour (book on coopculture.it).","Evening: Trevi Fountain."]})),
+  D(["Mon","14"],"Rome","Vatican day",rome.vatican),
+  D(["Tue","15"],"Rome → Mumbai","Fly home",ROMEFLY)
+ ],
+ E4:[
+  D(["Sat","5"],"Paris (Orly)","Land, move to Orly, rest",Object.assign({},parisRest,{go:ARRIVE_PARIS+" RER B train from CDG to Antony, then the Orlyval shuttle train to Orly, about 1h15 on one combined ticket. The ibis Coeur d'Orly is about a 5-minute walk from the terminal."})),
+  D(["Sun","6"],"Paris → Sorrento","Fly to Naples, bus to Sorrento",{go:"easyJet Orly 09:35 → Naples 11:45. Curreri bus from outside Naples arrivals straight to Sorrento, about 1 hour.",see:["Check in at Hotel Antiche Mura on Piazza Tasso and rest.","Late afternoon: 5-min walk to Villa Comunale for the sunset over the bay.","Evening: Piazza Tasso Christmas tree light show."],eat:"Dinner: Mondo Bio (all vegetarian) or any trattoria for gnocchi alla sorrentina."}),
+  D(["Mon","7"],"Sorrento","♥ Anniversary by the sea",Object.assign({anniv:true},sor.anniv,{see:["Optional gentle morning: SITA bus from Sorrento station to Positano (~50 min) for the famous view, back by lunch.",...sor.anniv.see.slice(2)]})),
+  D(["Tue","8"],"Sorrento → Florence","Train to Florence",flo.arrive("Circumvesuviana train Sorrento → Naples (about 1h10), then fast train Naples → Florence SMN, about 3 hours. Holiday today, book early.")),
+  D(["Wed","9"],"Florence","Half-day to Pisa",flo.pisa),
+  D(["Thu","10"],"Florence","Uffizi and the city",flo.uffizi),
+  D(["Fri","11"],"Florence → Venice","Train to Venice",ven.arrive("Morning fast train Florence → Venice, about 2h10. Step out of the station straight onto the Grand Canal.")),
+  D(["Sat","12"],"Venice","St Mark's, Rialto and Murano",Object.assign({},ven.marks,{see:ven.marks.see.concat(["If you have energy: a vaporetto to Murano for a glass-blowing demo."])})),
+  D(["Sun","13"],"Venice → Rome","Train to Rome, Colosseum",Object.assign(rome.arrive("Morning fast train Venice → Rome Termini, about 3h45 (leave by 09:00)."),{see:["Check in at UNA Hotels Decò, 2 minutes from Termini.","Afternoon: Colosseum + Forum guided tour (book on coopculture.it).","Evening: Trevi Fountain."]})),
+  D(["Mon","14"],"Rome","Vatican day",rome.vatican),
   D(["Tue","15"],"Rome → Mumbai","Fly home",ROMEFLY)
  ],
  A1:[
@@ -926,7 +958,7 @@ try{const s=localStorage.getItem("italy-route"); if(s&&ROUTES[s]) current=s;}cat
 
 function picker(){
   const g={A:["Fly into Italy the same day (5 Dec)","You land in Paris at 06:45 and fly on to Italy that afternoon."],B:["Sleep one night in Paris first","Rest at an airport hotel, fly to Italy on Sun 6 Dec."],C:["Everything on your list, nothing dropped","Amalfi, Rome, Florence, Pisa and Venice, all in. Busy, but complete."],D:["Fly home from Rome","Finish in Rome instead of Milan. Etihad via Abu Dhabi, same 06:45 arrival in Paris, about ₹5,800 cheaper for the Mumbai flights."],
-  E:["Anniversary somewhere other than Venice","Florence or Milan on Mon 7 Dec, with the same calm pace."]};
+  E:["Anniversary somewhere other than Venice","Florence, Milan or Sorrento on Mon 7 Dec. Sorrento routes skip Milan and fly home from Rome."]};
   document.getElementById("picker").innerHTML=Object.keys(g).map(k=>`<div class="group"><h3>Option ${k} · ${g[k][0]}</h3><p class="small muted">${g[k][1]}</p><div class="routes">${Object.keys(ROUTES).filter(id=>ROUTES[id].grp===k).map(id=>{const r=ROUTES[id],c=costs(id);return `<button class="route" data-id="${id}" aria-pressed="${id===current}"><span class="thumb" style="${bg(CITYIMG[r.anniv])}" aria-hidden="true"></span><span class="code">ROUTE ${id}${r.tag[1]?` · <span style="color:${r.tag[0]==="best"?"var(--gold)":r.tag[0]==="busy"?"var(--warn)":"var(--teal)"}">${r.tag[1].toUpperCase()}</span>`:""}</span><span class="name">${r.name}</span>${nightsChips(r)}<span class="pp num">${lakh(c.pp)} <span class="small muted">/ person</span></span><span class="small muted">♥ 7 Dec in ${r.anniv}</span></button>`}).join("")}</div></div>`).join("");
   document.querySelectorAll(".route").forEach(b=>b.addEventListener("click",()=>{current=b.dataset.id;try{localStorage.setItem("italy-route",current)}catch(e){};const rp=document.getElementById("routepick");if(rp)rp.open=false;render();showTab("trip");}));
 }
