@@ -1079,7 +1079,7 @@ function openTrip(a){const r=buildRoute(a);if(!r.ok)return false;current="Q";ren
 function savedHTML(){
   const l=svGet();
   return `<details class="ref" ${l.length?"open":""}><summary><span>💾 Saved trips${l.length?" · "+l.length:""}</span><span class="plus">+</span></summary><div class="inner">
-   ${l.length?l.map((t,i)=>`<div class="callout" style="gap:6px"><b>${t.name}</b><p class="small muted">${t.pp}</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="chgbtn" data-qopen="${i}">Open</button><button class="chgbtn" data-qdel="${i}" style="border-color:var(--line);color:var(--muted)">Delete</button></div></div>`).join(""):`<p class="small muted">Nothing saved yet. Finish the quiz and tap Save this trip.</p>`}
+   ${l.length?l.map((t,i)=>`<div class="callout" style="gap:6px"><b>${t.name}</b><p class="small muted">${t.pp}</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="chgbtn" data-qopen="${i}">Open</button><button class="chgbtn" data-qdel="${i}" style="border-color:var(--line);color:var(--muted)">Delete</button></div><p class="small muted">Share code:</p><input readonly class="svcode" value="${tripCode(t.a)}" style="width:100%;padding:10px;font-size:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit"><div><button class="chgbtn" data-qcopyi>Copy code</button> <span class="small svmsg"></span></div></div>`).join(""):`<p class="small muted">Nothing saved yet. Finish the quiz and tap Save this trip.</p>`}
    <p class="small"><b>Have a trip code?</b> Paste it here to open that trip on this phone.</p>
    <input id="qcode" placeholder="Paste trip code" style="width:100%;padding:12px;font-size:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit"><div style="margin-top:8px"><button class="chgbtn" data-qcode>Open trip</button> <span class="small" id="qcodemsg" style="color:var(--warn)"></span></div>
   </div></details>`;
@@ -1151,7 +1151,8 @@ document.addEventListener("click",e=>{
   const op=e.target.closest("[data-qopen]");if(op){const t=svGet()[+op.dataset.qopen];if(t)openTrip(t.a);return;}
   const dl=e.target.closest("[data-qdel]");if(dl){const l=svGet();l.splice(+dl.dataset.qdel,1);svSet(l);quiz();return;}
   if(e.target.closest("[data-qcode]")){const a=codeTrip(document.getElementById("qcode").value);if(!a||!openTrip(a))document.getElementById("qcodemsg").textContent="That code did not work.";return;}
-  if(e.target.closest("[data-qcopy]")){const i=document.getElementById("qmycode");i.select();let ok=false;try{ok=document.execCommand("copy")}catch(_){}try{navigator.clipboard&&navigator.clipboard.writeText(i.value);ok=true}catch(_){}document.getElementById("qcopymsg").textContent=ok?"Copied ✓":"Press and hold the code to copy it.";return;}
+  const ci=e.target.closest("[data-qcopyi]");if(ci){const box=ci.closest(".callout"),i=box.querySelector(".svcode");i.select();let ok=false;try{ok=document.execCommand("copy")}catch(_){}try{navigator.clipboard&&navigator.clipboard.writeText(i.value).catch(()=>{});ok=true}catch(_){}box.querySelector(".svmsg").textContent=ok?"Copied ✓":"Press and hold the code to copy it.";return;}
+  if(e.target.closest("[data-qcopy]")){const i=document.getElementById("qmycode");i.select();let ok=false;try{ok=document.execCommand("copy")}catch(_){}try{navigator.clipboard&&navigator.clipboard.writeText(i.value).catch(()=>{});ok=true}catch(_){}document.getElementById("qcopymsg").textContent=ok?"Copied ✓":"Press and hold the code to copy it.";return;}
   const p=e.target.closest("[data-qpick]"); if(p){current=p.dataset.qpick;try{localStorage.setItem("italy-route",current==="Q"?"B2":current)}catch(_){};render();showTab("trip");}
 });
 /* ---------- render ---------- */
