@@ -225,7 +225,7 @@ details.sub[open]>summary{margin-bottom:6px}
   <p class="lead">Ten nights in Italy, entering through Paris. Mon 7 Dec is your anniversary: no travel, just a lovely evening for the two of you. <span style="color:var(--gold)">♥</span></p>
 </header>
 
-<nav class="tabs" aria-label="Sections"><button class="tabbtn" id="routechip" style="background:var(--gold-soft);border-color:var(--gold)">🔁 Route</button><button class="tabbtn" data-tab="trip" aria-selected="false">🗺️ Trip</button><button class="tabbtn" data-tab="days" aria-selected="false">📅 Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">🏨 Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">🍽️ Food</button><button class="tabbtn" data-tab="together" aria-selected="false">✨ Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">🚆 Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">✅ To book</button><button class="tabbtn" data-tab="info" aria-selected="false">ℹ️ Good to know</button></nav>
+<nav class="tabs" aria-label="Sections"><button class="tabbtn" id="routechip" style="background:var(--gold-soft);border-color:var(--gold)">🔁 Route</button><button class="tabbtn" data-tab="trip" aria-selected="false">🗺️ Trip</button><button class="tabbtn" data-tab="quiz" aria-selected="false">🎯 Find my route</button><button class="tabbtn" data-tab="days" aria-selected="false">📅 Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">🏨 Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">🍽️ Food</button><button class="tabbtn" data-tab="together" aria-selected="false">✨ Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">🚆 Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">✅ To book</button><button class="tabbtn" data-tab="info" aria-selected="false">ℹ️ Good to know</button></nav>
 <main>
 <section class="tab" id="tab-trip">
   <div id="routehead" style="display:flex;flex-direction:column;gap:6px"></div>
@@ -233,6 +233,11 @@ details.sub[open]>summary{margin-bottom:6px}
   <div class="panel" id="summary"></div>
   <details class="ref" id="routepick"><summary><span>All routes <span class="small muted">· <span id="nroutes">16</span> options</span></span><span class="plus">+</span></summary><div class="inner"><p class="small muted">Tap a route. Everything on every tab changes to match it. Prices are per person.</p><div class="groups" id="picker"></div></div></details>
 
+</section>
+<section class="tab" id="tab-quiz" hidden>
+  <h2>Find my route</h2>
+  <p class="muted">Seven quick questions. Then you get your best-matching routes.</p>
+  <div class="panel" id="quizbody"></div>
 </section>
 <section class="tab" id="tab-days" hidden>
   <h2>Day by day</h2>
@@ -850,9 +855,66 @@ function moveBlock(d){
 }
 function stopsLine(r){const seq=["Paris"].concat(r.path.filter(p=>p!=="Paris"));
   const nn=c=>r.nights.filter(([k])=>HOTEL[k].city.indexOf(c)===0).reduce((t,[,n])=>t+n,0);
-  return seq.map(p=>{const n=nn(p);const sub=n?` <span class="muted small" style="font-weight:400">${n} night${n>1?"s":""}</span>`:(p==="Paris"?` <span class="muted small" style="font-weight:400">airport only</span>`:(p==="Pisa"?` <span class="muted small" style="font-weight:400">day trip</span>`:""));
-    return (p===r.anniv?`<span style="color:var(--gold)">♥ ${p}</span>`:p)+sub;}).join(' <span class="muted">→</span> ');}
-function nightsChips(r){return `<p class="small muted nights">${r.nights.map(([k,n])=>`${n} night${n>1?"s":""} ${HOTEL[k].city.replace(" CDG","").replace(" Orly","")}`).join(" · ")}</p>`;}
+  return seq.map(p=>{const n=nn(p);const sub=n?` <span class="muted small" style="font-weight:400">${n}N</span>`:(p==="Paris"?` <span class="muted small" style="font-weight:400">airport only</span>`:(p==="Pisa"?` <span class="muted small" style="font-weight:400">day trip</span>`:""));
+    return (p===r.anniv?`<span style="color:var(--gold)">♥ ${p}</span>`:p)+sub;}).join(' <span class="muted">→</span> ')+' <span class="muted small" style="font-weight:400">(N = nights)</span>';}
+function nightsChips(r){return `<p class="small muted nights">${r.nights.map(([k,n])=>`${n}N ${HOTEL[k].city.replace(" CDG","").replace(" Orly","")}`).join(" · ")}</p>`;}
+
+/* ---------- quiz ---------- */
+const QZ={step:0,a:{}};
+const QS=[
+ {k:"places",t:"Which places must be in your trip?",multi:true,o:[["Rome","Rome"],["Florence","Florence"],["Venice","Venice"],["Pisa","Pisa (Leaning Tower)"],["Sorrento","Amalfi Coast (Sorrento)"],["Milan","Milan"]],h:"Pick all you like, then tap Next."},
+ {k:"most",t:"Where would you like the most time?",o:[["Rome","Rome"],["Florence","Florence"],["Venice","Venice"],["Sorrento","Amalfi Coast"],["Milan","Milan"],["equal","Equal time everywhere"]]},
+ {k:"pace",t:"How busy should the trip feel?",o:[["slow","Slow","Fewest hotel changes (3–4)"],["mid","Balanced","About 4–5 hotels"],["all","See it all","5 or more hotels, longer days"]]},
+ {k:"days",t:"What kind of days do you like?",multi:true,o:[["sights","Big sights and museums"],["slow","Slow walks and views"],["hands","Hands-on things: workshops, classes"]],h:"Pick any, then tap Next."},
+ {k:"home",t:"Where do you want to fly home from?",o:[["Milan","Milan"],["Rome","Rome"],["any","Either is fine"]]},
+ {k:"anniv",t:"Where should your anniversary (Mon 7 Dec) be?",o:[["Venice","Venice"],["Rome","Rome"],["Florence","Florence"],["Milan","Milan"],["Sorrento","Sorrento (by the sea)"],["any","Surprise me"]]},
+ {k:"budget",t:"Budget per person for land costs?",o:[["150000","About ₹1.5L","Cheaper routes first"],["180000","Up to ₹1.8L"],["250000","Up to ₹2.5L","Cost is not a worry"]]}
+];
+const nightsIn=(r,c)=>r.nights.filter(([k])=>HOTEL[k].city.indexOf(c)===0).reduce((t,[,n])=>t+n,0);
+function qzScore(id){
+  const r=ROUTES[id],a=QZ.a,pl=a.places||[],dy=a.days||[],h=r.nights.length,N=c=>nightsIn(r,c);
+  let s=0;const why=[],miss=[];
+  pl.forEach(p=>{const has=p==="Pisa"?(r.legs.includes("pisa")||r.path.includes("Pisa")):N(p)>0; if(!has){s-=100;miss.push(p==="Sorrento"?"Amalfi":p);}});
+  const vis=["Rome","Florence","Venice","Milan","Sorrento"].filter(c=>N(c)>0),ns=vis.map(N);
+  if(a.most&&a.most!=="equal"){s+=N(a.most)*6;if(N(a.most)===Math.max(...ns)&&N(a.most)>0)why.push(`Most time in ${a.most==="Sorrento"?"Amalfi":a.most} (${N(a.most)}N)`);}
+  if(a.most==="equal"){s-=(Math.max(...ns)-Math.min(...ns))*4;}
+  if(a.pace==="slow")s-=Math.max(0,h-4)*15; if(a.pace==="mid")s-=Math.abs(h-5)*8; if(a.pace==="all")s+=h*6;
+  why.push(`${h} hotel${h>1?"s":""}`);
+  if(dy.includes("sights"))s+=(N("Rome")+N("Florence"))*2;
+  if(dy.includes("slow"))s+=(N("Venice")+N("Sorrento"))*2-h*2;
+  if(dy.includes("hands"))s+=(N("Rome")+N("Florence")+N("Venice")+N("Sorrento"))*1.5;
+  if(a.home&&a.home!=="any"&&(r.homeFrom||"Milan")!==a.home)s-=60;
+  if(a.anniv&&a.anniv!=="any"&&r.anniv!==a.anniv)s-=40; else if(a.anniv&&a.anniv!=="any")why.unshift(`Anniversary in ${r.anniv}`);
+  const pp=costs(id).pp,lim=+a.budget||250000; if(pp>lim)s-=(pp-lim)/500; s-=pp/4000;
+  why.push(`Fly home from ${r.homeFrom||"Milan"}`);
+  return {id,s,why,miss,pp};
+}
+function quiz(){
+  const el=document.getElementById("quizbody"); if(!el) return;
+  const st=QZ.step;
+  if(st<QS.length){
+    const q=QS[st],cur=QZ.a[q.k];
+    el.innerHTML=`<p class="small muted">Question ${st+1} of ${QS.length}</p><div style="height:6px;border-radius:99px;background:var(--sunk)"><div style="height:6px;border-radius:99px;background:var(--teal);width:${(st/QS.length)*100}%"></div></div>
+     <h3>${q.t}</h3>${q.h?`<p class="small muted">${q.h}</p>`:""}
+     <div class="seg">${q.o.map(([v,l,d])=>`<button data-q="${v}" aria-pressed="${q.multi?(cur||[]).includes(v):cur===v}"><b>${l||v}</b>${d?`<span class="small muted">${d}</span>`:""}</button>`).join("")}</div>
+     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${st>0?`<button class="chgbtn" data-qback>Back</button>`:""}${q.multi?`<button class="chgbtn" data-qnext style="background:var(--teal);color:var(--surface)">Next</button>`:""}<button class="chgbtn" data-qskip style="border-color:var(--line);color:var(--muted)">Skip</button></div>`;
+  } else {
+    const res=Object.keys(ROUTES).map(qzScore).sort((x,y)=>y.s-x.s).slice(0,3);
+    const none=res[0].miss.length>0;
+    el.innerHTML=`<h3>Your best matches</h3><p class="small muted">${none?"No route has everything you picked, so these are the closest. ":""}Costs use your food choice on the Trip tab (${FOODMODES[FOODMODE].n}).</p>
+     ${res.map((x,i)=>{const r=ROUTES[x.id];return `<div class="callout" style="gap:8px;${i===0?"border:2px solid var(--teal)":""}"><span class="eyebrow">${i===0?"Best match":"Also good"} · Route ${x.id}${r.tag[1]?" · "+r.tag[1]:""}</span><b style="font-size:19px">${r.name}</b><p style="font-weight:400;font-size:15px">${stopsLine(r)}</p><p class="small">${x.why.join(" · ")} · <span class="num">${lakh(x.pp)}</span> per person</p>${x.miss.length?`<p class="small" style="color:var(--warn)">Missing: ${x.miss.join(", ")}</p>`:""}<div><button class="chgbtn" data-qpick="${x.id}">Show this route</button></div></div>`}).join("")}
+     <div><button class="chgbtn" data-qagain style="border-color:var(--line);color:var(--muted)">Start again</button></div>`;
+  }
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest&&e.target.closest("#quizbody"); if(!t) return;
+  const o=e.target.closest("[data-q]"),q=QS[QZ.step];
+  if(o&&q){const v=o.dataset.q; if(q.multi){const a=QZ.a[q.k]||[];QZ.a[q.k]=a.includes(v)?a.filter(x=>x!==v):a.concat(v);} else {QZ.a[q.k]=v;QZ.step++;} quiz();return;}
+  if(e.target.closest("[data-qnext]")||e.target.closest("[data-qskip]")){QZ.step++;quiz();return;}
+  if(e.target.closest("[data-qback]")){QZ.step=Math.max(0,QZ.step-1);quiz();return;}
+  if(e.target.closest("[data-qagain]")){QZ.step=0;QZ.a={};quiz();return;}
+  const p=e.target.closest("[data-qpick]"); if(p){current=p.dataset.qpick;try{localStorage.setItem("italy-route",current)}catch(_){};render();showTab("trip");}
+});
 /* ---------- render ---------- */
 let current="B2";
 try{const s=localStorage.getItem("italy-route"); if(s&&ROUTES[s]) current=s;}catch(e){}
@@ -875,6 +937,7 @@ function render(){
   {const rc=document.getElementById("routechip"); if(rc) rc.textContent="🔁 Route "+current+" · change";}
   foodPicker();
   picker();
+  quiz();
   const r=ROUTES[current],c=costs(current),f=FLIGHT[current];
   const target=150000, over=c.pp-target, maxv=Math.max(c.pp,target)*1.08;
   document.getElementById("routehead").innerHTML=`
@@ -939,7 +1002,7 @@ function render(){
 const FIMG={"Rome":"trevi","Florence":"florence","Venice":"venice","Milan":"milan","Sorrento & Amalfi":"amalfi"};
 document.getElementById("food").innerHTML=FOODS.map(f=>`<div class="card"><div class="ph" style="${bg(FIMG[f.c])};aspect-ratio:16/7" role="img" aria-label="${f.c}"></div><h4>${f.c}</h4><ul>${f.l.map(([n,d,q])=>`<li><a href="${gm(q)}" target="_blank" rel="noopener"><b>${n}</b></a>: ${d}</li>`).join("")}</ul></div>`).join("");
 
-const TABKEYS=["trip","days","hotels","food","together","transport","book","info"];
+const TABKEYS=["trip","quiz","days","hotels","food","together","transport","book","info"];
 function showTab(k,scroll){ if(!TABKEYS.includes(k)) k="trip";
   TABKEYS.forEach(t=>{const el=document.getElementById("tab-"+t); if(el) el.hidden=(t!==k);});
   document.querySelectorAll(".tabbtn").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===k?"true":"false"));
