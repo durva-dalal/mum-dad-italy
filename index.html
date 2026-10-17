@@ -107,7 +107,7 @@ summary::-webkit-details-marker{display:none}
 .sumtxt .t{font-weight:700}
 .sumtxt .c{font-size:14px;color:var(--muted)}
 .plus{font-size:22px;color:var(--muted);transition:transform .2s}
-details[open] .plus{transform:rotate(45deg)}
+details[open]>summary .plus{transform:rotate(45deg)}
 .daybody{padding:4px 16px 18px;display:flex;flex-direction:column;gap:12px}
 .blk{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;font-size:16px}
 @media (max-width:520px){.blk{grid-template-columns:1fr;gap:2px}}
@@ -181,9 +181,33 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .nchip{font-size:13px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--teal-soft);color:var(--ink)}
 .nchip.a{background:var(--gold-soft)}
 @media (max-width:520px){header .lead{font-size:15px}header h1{font-size:30px}}
-.tabbtn{padding:10px 12px!important;background:none!important;border:0!important;border-bottom:3px solid transparent!important;border-radius:0!important;color:var(--muted);font-size:15px}
-.tabbtn[aria-selected="true"]{color:var(--ink)!important;border-bottom-color:var(--teal)!important}
-nav.tabs{gap:2px;padding:4px 0 0}
+nav.tabs{position:fixed!important;left:0;right:0;bottom:0;top:auto!important;z-index:30;display:grid!important;grid-template-columns:repeat(5,1fr);gap:0!important;padding:0 0 env(safe-area-inset-bottom,0px)!important;margin:0!important;background:var(--surface)!important;border-top:1px solid var(--line);border-bottom:0!important;box-shadow:0 -4px 16px rgba(0,0,0,.08);overflow:visible!important}
+nav.tabs .tabbtn{all:unset;cursor:pointer;box-sizing:border-box;text-align:center;padding:18px 2px 16px;font-weight:700;font-size:16px;color:var(--muted);border-top:4px solid transparent}
+nav.tabs .tabbtn[aria-selected="true"]{color:var(--ink);border-top-color:var(--teal);background:var(--teal-soft)}
+nav.tabs .tabbtn:focus-visible{outline:3px solid var(--gold);outline-offset:-3px}
+#moremenu{position:absolute;right:8px;bottom:100%;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.18);display:flex;flex-direction:column;min-width:200px;overflow:hidden}
+#moremenu[hidden]{display:none}
+#moremenu .tabbtn{text-align:left;padding:16px 20px;border-top:0;border-bottom:1px solid var(--line);font-size:17px}
+#moremenu .tabbtn:last-child{border-bottom:0}
+body{padding-bottom:88px}
+.chgbtn{all:unset;cursor:pointer;padding:9px 16px;border:2px solid var(--teal);border-radius:999px;color:var(--teal);font-weight:700;font-size:15px}
+.dayimg{max-width:none!important;aspect-ratio:16/7!important}
+.daybody{gap:14px!important}
+.blk{display:flex!important;flex-direction:column!important;gap:6px!important;padding-top:14px;border-top:1px solid var(--line)}
+.blk>span{font-size:16px!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;padding:0!important;font-weight:700}
+.blk ul{padding-left:20px!important;gap:6px!important}
+details.sub{padding-top:14px!important}
+details.sub>summary{font-size:16px!important}
+.daybody .callout{background:none;padding:0 0 0 12px!important;border-left:3px solid var(--line);border-radius:0}
+.daybody .callout>b{font-weight:700;font-size:15px}
+.callout p{margin:0}
+.extras{display:flex!important;flex-direction:column;gap:0!important}
+.extra{display:flex!important;justify-content:space-between;gap:16px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);background:none!important;border-radius:0!important}
+.extra b{text-align:right;flex:none;max-width:45%}
+.extra:last-child{border-bottom:0}
+footer details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+footer summary{cursor:pointer;font-weight:700;font-size:15px;color:var(--ink)}
+footer details p{margin:10px 0 0}
 .route .thumb{aspect-ratio:3/1!important}
 .chgbtn{all:unset;cursor:pointer;padding:9px 16px;border:2px solid var(--teal);border-radius:999px;color:var(--teal);font-weight:700;font-size:15px}
 .chgbtn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
@@ -204,7 +228,7 @@ details.sub[open]>summary{margin-bottom:6px}
   <p class="lead">Ten nights in Italy, entering through Paris. Mon 7 Dec is your anniversary: no travel, just a lovely evening for the two of you. <span style="color:var(--gold)">♥</span></p>
 </header>
 
-<nav class="tabs" aria-label="Sections"><button class="tabbtn" data-tab="trip" aria-selected="false">Trip</button><button class="tabbtn" data-tab="days" aria-selected="false">Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">Food</button><button class="tabbtn" data-tab="together" aria-selected="false">Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">To book</button><button class="tabbtn" data-tab="info" aria-selected="false">Good to know</button></nav>
+<nav class="tabs" aria-label="Sections"><div id="moremenu" hidden><button class="tabbtn" data-tab="together" aria-selected="false">Together</button><button class="tabbtn" data-tab="transport" aria-selected="false">Transport</button><button class="tabbtn" data-tab="book" aria-selected="false">To book</button><button class="tabbtn" data-tab="info" aria-selected="false">Good to know</button></div><button class="tabbtn" data-tab="trip" aria-selected="false">Trip</button><button class="tabbtn" data-tab="days" aria-selected="false">Days</button><button class="tabbtn" data-tab="hotels" aria-selected="false">Hotels</button><button class="tabbtn" data-tab="food" aria-selected="false">Food</button><button class="tabbtn" id="morebtn" aria-expanded="false" aria-selected="false">More</button></nav>
 <main>
 <section class="tab" id="tab-trip">
   <div id="routehead" style="display:flex;flex-direction:column;gap:6px"></div>
@@ -226,7 +250,7 @@ details.sub[open]>summary{margin-bottom:6px}
   <h3>Grocery shops near your hotels</h3>
   <p class="small muted">For fruit, bread, yoghurt, cheese, snacks and water. Most rooms in Italy have no kettle, so pack a small travel kettle if you want tea or instant food in the room.</p>
   <div class="cards" id="grocery"></div>
-  <p class="small muted">Prices are what Google Hotels showed on 16 Oct 2026 for the exact nights of Route B2 (Paris 5 Dec, Venice 6–9, Florence 9–12, Rome 12–14, Milan 14–15, Sorrento 6–8), per room per night for 2, before city tax. Other routes use the same hotels on slightly different nights, so expect small differences. They change daily, so re-check before booking. Every hotel here has a lift and heating, and is 2–6 minutes on foot from a main station or bus stop, so getting around is easy. The other-option hotels weren't all checked for a lift, so check before booking one.</p>
+  
 
 </section>
 <section class="tab" id="tab-food" hidden>
@@ -319,8 +343,12 @@ details.sub[open]>summary{margin-bottom:6px}
 </main>
 
 <footer>
-  <p>Money is in rupees for 2 people, using €1 = ₹112 and £1 = ₹128 (today's rate plus about 3% card fees). Food is budgeted at ₹8,400 a day for both if you eat out every meal. Use the "How do you like to eat?" buttons at the top to lower it. Flights were checked on Google Flights on 16 Oct 2026 and prices move daily.</p>
-    <p>Flights to and from Mumbai (₹1,40,906–1,46,740 for 2, depending on whether you fly home from Rome or Milan) are not in the land total. Add them on top.</p>
+  <details><summary>About these numbers</summary>
+  <p>Money is in rupees for 2 people, using €1 = ₹112 and £1 = ₹128 (today's rate plus about 3% card fees). Food is budgeted at ₹8,400 a day for both if you eat out every meal. Use "How do you like to eat?" on the Trip tab to lower it. Flights were checked on Google Flights on 16–17 Oct 2026 and prices move daily.</p>
+  <p>Flights to and from Mumbai (₹1,40,906–1,46,740 for 2, depending on whether you fly home from Rome or Milan) are not in the land total. Add them on top.</p>
+  <p>Prices are what Google Hotels showed on 16 Oct 2026 for the exact nights of Route B2 (Paris 5 Dec, Venice 6–9, Florence 9–12, Rome 12–14, Milan 14–15, Sorrento 6–8), per room per night for 2, before city tax. Other routes use the same hotels on slightly different nights, so expect small differences. They change daily, so re-check before booking. Every hotel here has a lift and heating, and is 2–6 minutes on foot from a main station or bus stop, so getting around is easy. The other-option hotels weren't all checked for a lift, so check before booking one.</p>
+  <p>Hotel amenities (lift, heating, free Wi-Fi, 24h desk) come from the hotels' own listings, checked 17 Oct 2026. Abbreviations: Bkfst = breakfast, incl. = included.</p>
+  </details>
 </footer>
 </div>
 
@@ -723,7 +751,7 @@ const EXTRAS=[
  
  {t:"Half-day to Pompeii by train from Sorrento",p:"train + entry",only:"Sorrento"},
  {t:"Upgrade one night to a canal-view or sea-view room",p:"~₹5,000–8,000"},
- {t:"Or simply keep it, and the trip lands closer to ₹1.5L each",p:"🙂"}
+ {t:"Or simply keep it, and the trip lands closer to ₹1.5L each",p:""}
 ];
 const GROCERY={
  rome:[["Tuday Conad","Inside Termini station, Piazza dei Cinquecento","5:30am–11:30pm daily"],["Carrefour Express","Via del Viminale 35","7:30am–10pm (Sun from 9am)"],["Indian Punjabi Store","Via Foscolo 29 (Indian groceries + ready-to-eat)","8:30am–8:30pm daily"]],
@@ -773,7 +801,7 @@ function foodBlock(d0){
     alt=`Fancy one meal out today? ${d.eat}`;
   }
   if(false){const pool=DAY_EXTRA[k];const e=pool[(parseInt(d.date[1])||0)%pool.length];extra=`<div class="blk"><span>Extra</span><div class="callout" style="padding:10px 12px"><b>💡 With today's food saving you could add:</b><p>${e[0]} · <span class="num">${e[1]}</span></p></div></div>`;}
-  return `<details class="sub"${d.anniv?" open":""}><summary>${d.anniv?"♥ Anniversary dinner & food today":"🍽️ Food today"} <span class="plus">+</span></summary><div>${main}<p class="small muted" style="margin-top:6px">↪ Or instead: ${alt}</p></div></details>${extra}`;
+  return `<details class="sub"${d.anniv?" open":""}><summary>${d.anniv?"♥ Anniversary dinner & food today":"Food today"} <span class="plus">+</span></summary><div>${main}<p class="small muted" style="margin-top:6px">Or instead: ${alt}</p></div></details>${extra}`;
 }
 function foodPicker(){
   const fn=document.getElementById("foodnow"); if(fn) fn.textContent="· "+FOODMODES[FOODMODE].n;
@@ -821,8 +849,12 @@ function moveBlock(d){
   if(d.anniv){const o=annivOpt(ROUTES[current]);hits=list.filter(([re])=>new RegExp(re,"i").test(txt+" "+o.n+" "+o.d));}
   if(!hits.length) return "";
   const h=HOTEL[k];
-  return `<details class="sub"><summary>🚆 How to get around today <span class="plus">+</span></summary><div class="callout" style="padding:12px 14px"><b>From ${h.name}:</b><ul>${hits.map(([,place,how])=>`<li><b>${place}:</b> ${how}</li>`).join("")}</ul><p class="small muted">🚕 <b>Only if you really need one:</b> ${TAXI[k]} · Plan any route live in <a href="https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(h.q)}&travelmode=transit" target="_blank" rel="noopener">Google Maps (transit)</a>.</p></div></details>`;
+  return `<details class="sub"><summary>Getting around today <span class="plus">+</span></summary><div class="callout" style="padding:12px 14px"><b>From ${h.name}:</b><ul>${hits.map(([,place,how])=>`<li><b>${place}:</b> ${how}</li>`).join("")}</ul><p class="small muted"><b>Only if you really need one:</b> ${TAXI[k]} · Plan any route live in <a href="https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(h.q)}&travelmode=transit" target="_blank" rel="noopener">Google Maps (transit)</a>.</p></div></details>`;
 }
+function stopsLine(r){const seq=["Paris"].concat(r.path.filter(p=>p!=="Paris"));
+  const nn=c=>r.nights.filter(([k])=>HOTEL[k].city.indexOf(c)===0).reduce((t,[,n])=>t+n,0);
+  return seq.map(p=>{const n=nn(p);const sub=n?` <span class="muted small" style="font-weight:400">${n} night${n>1?"s":""}</span>`:(p==="Paris"?` <span class="muted small" style="font-weight:400">airport only</span>`:(p==="Pisa"?` <span class="muted small" style="font-weight:400">day trip</span>`:""));
+    return (p===r.anniv?`<span style="color:var(--gold)">♥ ${p}</span>`:p)+sub;}).join(' <span class="muted">→</span> ');}
 function nightsChips(r){return `<p class="small muted nights">${r.nights.map(([k,n])=>`${n} night${n>1?"s":""} ${HOTEL[k].city.replace(" CDG","").replace(" Orly","")}`).join(" · ")}</p>`;}
 /* ---------- render ---------- */
 let current="B2";
@@ -851,8 +883,7 @@ function render(){
      <span class="eyebrow">Your route · Route ${current}${r.tag[1]?" · "+r.tag[1]:""}</span>
      <h2 style="font-size:clamp(26px,5vw,34px)">${r.name}</h2>
      <p class="lead">${r.blurb}</p>
-     <p style="font-weight:700">${["Paris"].concat(r.path.filter(p=>p!=="Paris")).map(p=>p===r.anniv?`<span style="color:var(--gold)">♥ ${p}</span>`:p+(p==="Paris"&&(r.grp==="A"||r.sameDay)?" (airport only)":"")).join(' <span class="muted">→</span> ')}</p>
-     ${nightsChips(r)}
+     <p style="font-weight:700;line-height:1.5">${stopsLine(r)}</p>
      <p><button class="chgbtn" id="chg">Change route</button></p>`;
   {const c=document.getElementById("chg"); if(c&&c.addEventListener) c.addEventListener("click",e=>{e.preventDefault();const rp=document.getElementById("routepick");if(rp){rp.open=true;rp.scrollIntoView({block:"start"});}});}
   document.getElementById("summary").innerHTML=`
@@ -872,8 +903,8 @@ function render(){
    </div>
    ${FOODMODE!=="out"?`<div class="callout"><b>Eating "${FOODMODES[FOODMODE].n}" saves about ${inr(84000-FOODMODES[FOODMODE].v)} on this route.</b><p class="small">If you'd like to use it, a few ideas:</p><div class="extras">${EXTRAS.filter(e=>!e.only||r.path.includes(e.only)).map(e=>`<div class="extra"><span>${e.t}</span><b class="num">${e.p}</b></div>`).join("")}</div></div>`:""}
 
-   <div class="callout"><b>Flights to and from Mumbai</b><div class="frows"><div><span>Airline</span>${longFor(r).air}</div><div><span>Going out</span>${longFor(r).out}</div><div><span>Coming home</span>${longFor(r).back}</div><div><span>Price for 2</span><b class="num">${inr(longFor(r).p)}</b> <em>(Google Flights, 17 Oct)</em></div></div></div>
-   ${(()=>{const q=f.t.split(" · ");return `<div class="callout"><b>Paris → Italy flight</b><div class="frows"><div><span>Airline</span>${q[0]}</div><div><span>Flight</span>${q[1]} · ${q[2]}</div><div><span>Price for 2</span><b class="num">${inr(f.p)}</b></div><div><span>Good to know</span>${f.why}</div></div><a href="https://www.google.com/travel/flights" target="_blank" rel="noopener">Check on Google Flights</a></div>`})()}
+   <div class="callout"><b>Flights to and from Mumbai</b><p>${longFor(r).air}</p><p>${longFor(r).out}</p><p>${longFor(r).back}</p><p><b class="num">${inr(longFor(r).p)}</b> for 2 <span class="muted small">(Google Flights, 17 Oct)</span></p></div>
+   <div class="callout"><b>Paris → Italy flight</b><p>${f.t}</p><p><b class="num">${inr(f.p)}</b> for 2. ${f.why}</p><a href="https://www.google.com/travel/flights" target="_blank" rel="noopener">Check on Google Flights</a></div>
    ${over>0?`<div class="callout gold"><b>How to get down to ₹1.5L each</b><ul><li>Swap one or two hotels for the "other option" on the Hotels tab (saves ₹10–20k).</li><li>Make your anniversary a gondola or sunset plus a simpler dinner (saves ₹10–15k).</li><li>Lunch at vegetarian buffets and pizza-by-the-slice places (saves ₹5–10k).</li></ul></div>`:""}
    <hr style="border:0;border-top:1px solid var(--line);margin:4px 0">
    <div class="top"><div style="display:flex;flex-direction:column;gap:8px;min-width:0">
@@ -887,10 +918,10 @@ function render(){
   const daysEl=document.getElementById("days");
   const keepOpen=(window.__daysRoute===current&&daysEl.querySelectorAll)?{d:[...daysEl.querySelectorAll("details.day")].map(x=>x.open),s:[...daysEl.querySelectorAll("details.sub")].map(x=>x.open)}:null;
   window.__daysRoute=current;
-  document.getElementById("days").innerHTML=DAYS[current].map((d,i)=>`<details class="day ${d.anniv?'anniv':''}"><summary><span class="dthumb" style="${bg(dayImg(d))}" aria-hidden="true"></span><span class="date"><span>${d.date[0]}</span><b>${d.date[1]}</b></span><span class="sumtxt"><span class="t">${d.title}</span><br><span class="c">${d.city}</span><br>${wxChip(d)}</span><span class="plus" aria-hidden="true">+</span></summary><div class="daybody">${d.title!=="Fly home"?`<p class="small muted">Tonight: ${HOTEL[OVERNIGHT(d)].name}</p>`:""}<div class="dayimg" style="${bg(dayImg(d))}" role="img" aria-label="${CAP[dayImg(d)]}"><span style="position:absolute;left:8px;bottom:8px;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px">${CAP[dayImg(d)]}</span></div>${d.go?`<div class="blk"><span>Getting there</span><div>${linkify(d.go,OVERNIGHT(d))}</div></div>`:""}${d.see?`<div class="blk"><span>Plan</span><ul>${d.see.map(s=>`<li>${linkify(s,OVERNIGHT(d))}</li>`).join("")}</ul></div>`:""}${moveBlock(d)}${foodBlock(d)}</div></details>`).join("");
+  document.getElementById("days").innerHTML=DAYS[current].map((d,i)=>`<details class="day ${d.anniv?'anniv':''}"><summary><span class="dthumb" style="${bg(dayImg(d))}" aria-hidden="true"></span><span class="date"><span>${d.date[0]}</span><b>${d.date[1]}</b></span><span class="sumtxt"><span class="t">${d.title}</span><br><span class="c">${d.city}</span><br>${wxChip(d)}</span><span class="plus" aria-hidden="true">+</span></summary><div class="daybody">${d.title!=="Fly home"?`<p class="small muted">Tonight: ${HOTEL[OVERNIGHT(d)].name}</p>`:""}<div class="dayimg" style="${bg(dayImg(d))}" role="img" aria-label="${CAP[dayImg(d)]}"><span style="position:absolute;left:8px;bottom:8px;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px">${CAP[dayImg(d)]}</span></div>${d.go?`<div class="blk"><span>Getting there</span><div>${linkify(d.go,OVERNIGHT(d))}</div></div>`:""}${d.see?`<div class="blk"><span>Today</span><ul>${d.see.map(s=>`<li>${linkify(s,OVERNIGHT(d))}</li>`).join("")}</ul></div>`:""}${moveBlock(d)}${foodBlock(d)}</div></details>`).join("");
   if(keepOpen&&daysEl.querySelectorAll){daysEl.querySelectorAll("details.day").forEach((x,n)=>{if(keepOpen.d[n])x.open=true});daysEl.querySelectorAll("details.sub").forEach((x,n)=>{if(n<keepOpen.s.length)x.open=keepOpen.s[n]});}
 
-  document.getElementById("hotels").innerHTML=`<thead><tr><th>City</th><th>Hotel</th><th>Walk to transport</th><th>Lift &amp; heating</th><th>Breakfast</th><th class="r">Per night</th><th class="r">Nights</th><th>Other option</th></tr></thead><tbody>${r.nights.map(([k,n])=>{const h=HOTEL[k];return `<tr><td>${h.city}</td><td><a class="pick" href="${gh(h.name+" "+h.city)}" target="_blank" rel="noopener">${h.name}</a> <span class="small muted">· ${h.rating}★ guests</span><br><a class="small" href="${gm(h.q)}" target="_blank" rel="noopener">📍 Map</a></td><td class="small">${h.walk}</td><td class="small">✓ Lift<br>✓ Heating</td><td class="small">${h.bk?`Extra, about ${inr(h.bk)} a night for both (counted in the total)`:"Included"}</td><td class="r">${inr(h.n)}</td><td class="r">${n}</td><td class="small"><a href="${gm(h.altq)}" target="_blank" rel="noopener">${h.alt}</a></td></tr>`}).join("")}</tbody>`;
+  document.getElementById("hotels").innerHTML=`<thead><tr><th>City</th><th>Hotel</th><th>Walk to transport</th><th>Amenities</th><th class="r">Per night</th><th class="r">Nights</th><th>Other option</th></tr></thead><tbody>${r.nights.map(([k,n])=>{const h=HOTEL[k];return `<tr><td>${h.city}</td><td><a class="pick" href="${gh(h.name+" "+h.city)}" target="_blank" rel="noopener">${h.name}</a> <span class="small muted">· ${h.rating}★ rating</span><br><a class="small" href="${gm(h.q)}" target="_blank" rel="noopener">📍 Map</a></td><td class="small">${h.walk}</td><td class="small">✓ Lift<br>✓ Heating<br>✓ Free Wi-Fi<br>✓ 24h desk<br>${h.bk?`✗ Bkfst extra, ~${inr(h.bk)}/night (in total)`:"✓ Bkfst incl."}</td><td class="r">${inr(h.n)}</td><td class="r">${n}</td><td class="small"><a href="${gm(h.altq)}" target="_blank" rel="noopener">${h.alt}</a></td></tr>`}).join("")}</tbody>`;
 
   const ecities=[...new Set(r.path.filter(p=>EXPERIENCES[p]))];
   document.getElementById("exp").innerHTML=ecities.map(c=>`<div class="card"><div class="ph" style="${bg(CITYIMG[c])};aspect-ratio:16/7" role="img" aria-label="${c}"><span>${c}</span></div><ul>${EXPERIENCES[c].map(([n,dsc,u,p])=>`<li><a href="${u}" target="_blank" rel="noopener"><b>${n}</b></a> <b class="num" style="color:var(--teal);">· ${p}</b><br><span class="small">${dsc}</span></li>`).join("")}</ul></div>`).join("")+`<p class="small muted" style="grid-column:1/-1">Book 1–2 weeks ahead and check each listing says it runs in December. Prices are the lowest "from" prices on GetYourGuide on 16 Oct 2026. Lavender and strawberry picking aren't in season in December, so these are the winter versions: truffle hunting, new olive oil, lemon groves. They're often on sale for less, and they're not in the totals above.</p>`;
@@ -914,11 +945,13 @@ const TABKEYS=["trip","days","hotels","food","together","transport","book","info
 function showTab(k,scroll){ if(!TABKEYS.includes(k)) k="trip";
   TABKEYS.forEach(t=>{const el=document.getElementById("tab-"+t); if(el) el.hidden=(t!==k);});
   document.querySelectorAll(".tabbtn").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===k?"true":"false"));
-  const act=document.querySelector(`.tabbtn[data-tab="${k}"]`); if(act&&act.scrollIntoView&&scroll!==false) act.scrollIntoView({block:"nearest",inline:"center"});
+  {const mb=document.getElementById("morebtn"),mm=document.getElementById("moremenu"),inMore=["together","transport","book","info"].includes(k);if(mb)mb.setAttribute("aria-selected",inMore?"true":"false");if(mm){mm.hidden=true;} if(mb)mb.setAttribute("aria-expanded","false");}
   try{localStorage.setItem("italy-tab",k)}catch(e){}
   if(scroll!==false) window.scrollTo({top:0});
 }
 document.querySelectorAll(".tabbtn[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+document.getElementById("morebtn").addEventListener("click",e=>{e.stopPropagation();const mm=document.getElementById("moremenu");mm.hidden=!mm.hidden;e.currentTarget.setAttribute("aria-expanded",mm.hidden?"false":"true");});
+document.addEventListener("click",e=>{const mm=document.getElementById("moremenu");if(mm&&!mm.hidden&&!e.target.closest("#moremenu")){mm.hidden=true;document.getElementById("morebtn").setAttribute("aria-expanded","false");}});
 document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("[data-goto]");if(a){e.preventDefault();showTab(a.dataset.goto);}});
 
 render();
